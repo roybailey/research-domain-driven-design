@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>me.roybailey</groupId>
+    <artifactId>research-domain-driven-design</artifactId>
+    <version>0.1.0</version>
+    <packaging>pom</packaging>
+
+    <name>Domain Driven Design</name>
+    <description>Domain Driven Design</description>
+
+    <modules>
+        <module>ddd-common</module>
+        <module>ddd-domain</module>
+        <module>ddd-framework</module>
+        <module>ddd-support</module>
+    </modules>
+
+</project>
