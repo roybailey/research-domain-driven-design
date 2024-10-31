@@ -14,13 +14,19 @@
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
-    <name>Domain Driven Design Ports</name>
-    <description>Domain Driven Design Ports</description>
+    <name>Domain Driven Design Framework</name>
+    <description>Domain Driven Design Framework</description>
 
     <properties>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>me.roybailey</groupId>
+            <artifactId>ddd-domain</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

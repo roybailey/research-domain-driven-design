@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>me.roybailey</groupId>
+        <artifactId>research-domain-driven-design</artifactId>
+        <version>0.1.0</version>
+    </parent>
+
+    <groupId>me.roybailey</groupId>
+    <artifactId>container-neo4j</artifactId>
+    <version>0.1.0</version>
+    <packaging>pom</packaging>
+
+    <name>Container Neo4j Image</name>
+    <description>Neo4j Container Image with APOC</description>
+
+    <properties>
+        <base.docker.name>neo4j</base.docker.name>
+        <base.docker.version>5.20.0-community</base.docker.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <images>
+                        <image>
+                            <alias>${project.artifactId}</alias>
+                            <name>
+                                ${docker.push.registry}${docker.group}/${project.artifactId}:${project.version}
+                            </name>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

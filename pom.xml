@@ -11,11 +11,936 @@
     <name>Domain Driven Design</name>
     <description>Domain Driven Design</description>
 
+    <properties>
+        <!-- language -->
+        <java.version>21</java.version>
+        <kotlin.version>2.0.0</kotlin.version>
+        <kotlinx.version>1.8.1</kotlinx.version>
+        <kotlin.compiler.jvmTarget>21</kotlin.compiler.jvmTarget>
+
+        <!-- jakarta -->
+        <jakarta.validation-api.version>3.0.2</jakarta.validation-api.version>
+        <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
+
+        <!-- spring -->
+        <!-- See https://docs.spring.io/spring-boot/appendix/dependency-versions/coordinates.html -->
+        <spring-boot.version>3.3.4</spring-boot.version>
+        <jackson.version>2.17.2</jackson.version><!-- from spring -->
+
+        <spring-cloud.version>4.1.5</spring-cloud.version>
+        <io-netty-macos.version>4.1.114.Final</io-netty-macos.version>
+
+        <!-- reactor -->
+        <io.projectreactor.version>3.6.10</io.projectreactor.version><!-- from spring -->
+        <reactor-kotlin-extensions.version>1.2.3</reactor-kotlin-extensions.version><!-- from spring -->
+
+        <!-- logging -->
+        <slf4j.version>2.0.16</slf4j.version><!-- from spring -->
+        <logback.version>1.5.8</logback.version><!-- from spring -->
+        <kotlin-logging.version>6.0.9</kotlin-logging.version>
+
+        <!-- testing -->
+        <junit-platform.version>5.10.2</junit-platform.version><!-- from spring -->
+        <assertj.version>3.25.3</assertj.version><!-- from spring -->
+        <mockito.version>5.11.3</mockito.version><!-- from spring -->
+        <mockito-kotlin.version>2.1.0</mockito-kotlin.version>
+        <testcontainers.version>1.19.8</testcontainers.version>
+        <surefire-plugin.version>2.22.2</surefire-plugin.version>
+        <surefire-exclude-test-tags></surefire-exclude-test-tags>
+        <!--
+        <surefire-exclude-test-tags>test-containers</surefire-exclude-test-tags>
+        -->
+        <ktor.version>1.6.1</ktor.version>
+        <h2.version>1.4.200</h2.version>
+
+        <!-- database -->
+        <flyway.version>10.10.0</flyway.version><!-- from spring -->
+        <jaxb.version>2.3.0</jaxb.version>
+        <postgres.version>42.7.3</postgres.version>
+
+        <!-- utilities -->
+        <commons-text.version>1.10.0</commons-text.version>
+        <commons-lang3.version>3.14.0</commons-lang3.version>
+        <commons-compress.version>1.26.2</commons-compress.version>
+        <commons-validator.version>1.9.0</commons-validator.version>
+        <commons-codec.version>1.17.0</commons-codec.version>
+        <result4k.version>2.0.0</result4k.version>
+        <guava.version>32.0.0-jre</guava.version>
+        <handlebars.version>4.1.2</handlebars.version>
+
+        <!-- build/plugins -->
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
+        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
+        <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
+
+        <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
+        <build.properties>${project.basedir}/target/classes/build.properties</build.properties>
+
+        <spring-boot-maven-plugin.skip>true</spring-boot-maven-plugin.skip>
+
+        <!-- docker/kubernetes -->
+        <docker.group>roybailey</docker.group>
+        <docker.pull.registry></docker.pull.registry>
+        <docker.push.registry></docker.push.registry>
+        <docker-maven-plugin.version>0.39.1</docker-maven-plugin.version>
+        <fabric8-maven-plugin.version>4.4.1</fabric8-maven-plugin.version>
+        <helm-maven-plugin.version>5.6</helm-maven-plugin.version>
+
+        <!-- DOCKER -->
+        <docker.image>${docker.pull.registry}${project.groupId}/${project.artifactId}:${project.version}</docker.image>
+        <base.cloud.version>0.5.0</base.cloud.version>
+        <base.docker.name>${docker.group}/container-java</base.docker.name>
+        <base.docker.version>${base.cloud.version}</base.docker.version>
+        <min.memory>-Xms256m</min.memory>
+        <max.memory>-Xmx1G</max.memory>
+        <replicas>1</replicas>
+        <spring-profiles-active />
+    </properties>
+
     <modules>
+        <module>container-neo4j</module>
         <module>ddd-common</module>
         <module>ddd-domain</module>
         <module>ddd-framework</module>
-        <module>ddd-support</module>
+        <module>ddd-service</module>
     </modules>
+
+    <!-- management of versions defined here for modules to include without versioning -->
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- Kotlin -->
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-reflect</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlinx</groupId>
+                <artifactId>kotlinx-coroutines-core</artifactId>
+                <version>${kotlinx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlinx</groupId>
+                <artifactId>kotlinx-coroutines-reactor</artifactId>
+                <version>${kotlinx.version}</version>
+            </dependency>
+
+            <!-- reactor -->
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-core</artifactId>
+                <version>${io.projectreactor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-test</artifactId>
+                <version>${io.projectreactor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.projectreactor.kotlin</groupId>
+                <artifactId>reactor-kotlin-extensions</artifactId>
+                <version>${reactor-kotlin-extensions.version}</version>
+            </dependency>
+
+            <!-- Logging -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.oshai</groupId>
+                <artifactId>kotlin-logging-jvm</artifactId>
+                <version>${kotlin-logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+
+            <!-- Unit Testing -->
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nhaarman.mockitokotlin2</groupId>
+                <artifactId>mockito-kotlin</artifactId>
+                <version>${mockito-kotlin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit-platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit-platform.version}</version>
+            </dependency>
+
+            <!-- Utilities -->
+            <dependency>
+                <groupId>com.natpryce</groupId>
+                <artifactId>result4k</artifactId>
+                <version>${result4k.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commons-text.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${commons-compress.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
+            <dependency>
+                <groupId>commons-validator</groupId>
+                <artifactId>commons-validator</artifactId>
+                <version>${commons-validator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons-codec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jknack</groupId>
+                <artifactId>handlebars</artifactId>
+                <version>${handlebars.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.netty/netty-resolver-dns-native-macos -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-resolver-dns-native-macos</artifactId>
+                <version>${io-netty-macos.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <!-- Database -->
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgres.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-database-postgresql</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+
+            <!-- Jakarta -->
+            <dependency>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>${jakarta.validation-api.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
+            <dependency>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${jakarta.servlet-api.version}</version>
+            </dependency>
+
+            <!-- SpringBoot -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-mail</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-jpa</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-neo4j</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-jooq</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-webmvc</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-webflux</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-oauth2-client</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-validation</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>runtime</scope>
+                <optional>true</optional>
+            </dependency>
+
+            <!-- // Spring Security OAuth2 client (needed for OAuth2 login and Keycloak integration) -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-oauth2-client</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <!-- // Spring Security OAuth2 Resource Server for validating JWT tokens -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <!-- // Spring Security OAuth2 Java Object Signing & Encryption -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <!-- JSON -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jdk8</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-kotlin</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <!-- TestContainers -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${testcontainers.version}</version>
+            </dependency>
+
+            <!-- Common Libraries & Starter Packs -->
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-base</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-base</artifactId>
+                <type>test-jar</type>
+                <classifier>tests</classifier>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-data-jpa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-data-jpa</artifactId>
+                <type>test-jar</type>
+                <classifier>tests</classifier>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-jooq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-jooq</artifactId>
+                <type>test-jar</type>
+                <classifier>tests</classifier>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-neo4j</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-neo4j</artifactId>
+                <type>test-jar</type>
+                <classifier>tests</classifier>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-keycloak</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-keycloak</artifactId>
+                <type>test-jar</type>
+                <classifier>tests</classifier>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-openapi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-openapi</artifactId>
+                <type>test-jar</type>
+                <classifier>tests</classifier>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-graphql</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-graphql</artifactId>
+                <type>test-jar</type>
+                <classifier>tests</classifier>
+                <version>${project.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-lib-web</artifactId>
+                <type>test-jar</type>
+                <classifier>tests</classifier>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>me.roybailey</groupId>
+                <artifactId>bud-common-starter-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.oshai</groupId>
+            <artifactId>kotlin-logging-jvm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-maven-plugin</artifactId>
+                    <version>${kotlin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.jetbrains.kotlin</groupId>
+                            <artifactId>kotlin-maven-allopen</artifactId>
+                            <version>${kotlin.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>compile</id>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                            <configuration>
+                                <sourceDirs>
+                                    <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                                    <sourceDir>${project.basedir}/src/main/java</sourceDir>
+                                </sourceDirs>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>test-compile</id>
+                            <goals>
+                                <goal>test-compile</goal>
+                            </goals>
+                            <configuration>
+                                <sourceDirs>
+                                    <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                                    <sourceDir>${project.basedir}/src/test/java</sourceDir>
+                                </sourceDirs>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!--
+                    Java Compiler configured for mixed use with Kotlin/Java projects.
+                    See: https://kotlinlang.org/docs/reference/using-maven.html#compiling-kotlin-and-java-sources
+                    Note: This plugin *MUST* be placed into the POM below the "kotlin-maven-plugin" for it to work correctly.
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                    <executions>
+                        <!-- Replacing default-compile as it is treated specially by maven -->
+                        <execution>
+                            <id>default-compile</id>
+                            <phase>none</phase>
+                        </execution>
+                        <!-- Replacing default-testCompile as it is treated specially by maven -->
+                        <execution>
+                            <id>default-testCompile</id>
+                            <phase>none</phase>
+                        </execution>
+                        <execution>
+                            <id>java-compile</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>java-test-compile</id>
+                            <phase>test-compile</phase>
+                            <goals>
+                                <goal>testCompile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <skip>${spring-boot-maven-plugin.skip}</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${surefire-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.junit.jupiter</groupId>
+                            <artifactId>junit-jupiter-engine</artifactId>
+                            <version>${junit-platform.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <excludedGroups>${surefire-exclude-test-tags}</excludedGroups>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${surefire-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>test-jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.1.2</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven-release-plugin.version}</version>
+                    <configuration>
+                        <goals>
+                            <tagNameFormat>v@{project.version}</tagNameFormat>
+                            <goal>deploy</goal>
+                        </goals>
+                    </configuration>
+                </plugin>
+                <!-- maven ant -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>properties-maven-plugin</artifactId>
+                    <version>${properties-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>write-project-properties</goal>
+                            </goals>
+                            <configuration>
+                                <outputFile>${build.properties}</outputFile>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${exec-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${maven-antrun-plugin.version}</version>
+                </plugin>
+                <!-- cloud -->
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>fabric8-maven-plugin</artifactId>
+                    <version>${fabric8-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${docker-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.kiwigrid</groupId>
+                    <artifactId>helm-maven-plugin</artifactId>
+                    <version>${helm-maven-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>${properties-maven-plugin.version}</version>
+                <!-- dump out all properties into build.properties file for template file copying -->
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>write-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <outputFile>${build.properties}</outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven-antrun-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>enrich-build-properties</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <target>
+                        <echo message="!!!!! Enriching ${build.properties}" />
+                        <!-- enrich build.properties file with project properties (not covered by properties-maven-plugin -->
+                        <echo file="${build.properties}" append="true">
+                            ${line.separator}project.groupId=${project.groupId}
+                        </echo>
+                        <echo file="${build.properties}" append="true">
+                            ${line.separator}project.artifactId=${project.artifactId}
+                        </echo>
+                        <echo file="${build.properties}" append="true">
+                            ${line.separator}project.version=${project.version}
+                        </echo>
+                        <echo file="${build.properties}" append="true">
+                            ${line.separator}project.name=${project.name}
+                        </echo>
+                        <echo file="${build.properties}" append="true">
+                            ${line.separator}project.description=${project.description}
+                        </echo>
+                    </target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- ============================================================ -->
+        <!-- DOCKER -->
+        <!-- ============================================================ -->
+        <profile>
+            <id>docker</id>
+            <activation>
+                <file>
+                    <exists>docker</exists>
+                </file>
+            </activation>
+            <build>
+                <pluginManagement>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <alias>${project.artifactId}</alias>
+                                    <name>
+                                        ${docker.push.registry}${docker.group}/${project.artifactId}:${project.version}
+                                    </name>
+                                    <build>
+                                        <from>${docker.pull.registry}${base.docker.name}:${base.docker.version}</from>
+                                        <assembly>
+                                            <mode>tar</mode>
+                                            <targetDir>/</targetDir>
+                                            <inline>
+                                                <fileSets>
+                                                    <fileSet>
+                                                        <directory>${project.basedir}/src/main/resources</directory>
+                                                        <outputDirectory>/opt/app/config/java/profiles</outputDirectory>
+                                                        <fileMode>0777</fileMode>
+                                                    </fileSet>
+                                                </fileSets>
+                                                <files>
+                                                    <file>
+                                                        <source>
+                                                            ${project.basedir}/target/${project.artifactId}-${project.version}.jar
+                                                        </source>
+                                                        <outputDirectory>/opt/app</outputDirectory>
+                                                        <fileMode>0777</fileMode>
+                                                    </file>
+                                                </files>
+                                            </inline>
+                                        </assembly>
+                                        <workdir>/opt/app</workdir>
+                                        <env>
+                                            <AB_OFF>true</AB_OFF>
+                                            <JAVA_APP_DIR>/opt/app</JAVA_APP_DIR>
+                                            <min_memory>${min.memory}</min_memory>
+                                            <max_memory>${max.memory}</max_memory>
+                                            <app_name>${project.artifactId}</app_name>
+                                            <app_version>${project.version}</app_version>
+                                        </env>
+                                        <ports>
+                                            <port>80</port>
+                                        </ports>
+                                        <entryPoint>
+                                            <exec>
+                                                <arg>java</arg>
+                                                <arg>-XX:InitialRAMPercentage=80</arg>
+                                                <arg>-XX:MinRAMPercentage=80</arg>
+                                                <arg>-XX:MaxRAMPercentage=80</arg>
+                                                <arg>-Dspring.config.location=/opt/app/config/java/profiles/,/opt/app/config/java/secrets/</arg>
+                                                <!--                                                <arg>-Dspring.profiles.active=${spring-profiles-active}</arg>-->
+                                                <arg>-jar</arg>
+                                                <arg>${project.artifactId}-${project.version}.jar</arg>
+                                            </exec>
+                                        </entryPoint>
+                                        <tags>
+                                            <tag>${project.version}</tag>
+                                            <tag>latest</tag>
+                                        </tags>
+                                    </build>
+                                    <run>
+                                        <ports>
+                                            <port>80:80</port>
+                                        </ports>
+                                    </run>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 
 </project>
