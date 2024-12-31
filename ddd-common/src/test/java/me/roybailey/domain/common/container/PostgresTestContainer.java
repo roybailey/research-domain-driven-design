@@ -7,6 +7,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
 import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ public class PostgresTestContainer {
             Boolean reuse,
             Boolean start
     ) {
-        container = new PostgreSQLContainer<>("postgres:16.2");
+        container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16.2").asCompatibleSubstituteFor("postgres"));
         container.withDatabaseName("testdb");
         container.withUsername("test");
         container.withPassword("password");

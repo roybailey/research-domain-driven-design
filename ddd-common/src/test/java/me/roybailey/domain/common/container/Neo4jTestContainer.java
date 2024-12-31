@@ -8,6 +8,7 @@ import org.testcontainers.containers.Neo4jLabsPlugin;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
 import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
 import java.time.Duration;
@@ -32,7 +33,7 @@ public class Neo4jTestContainer {
             Boolean reuse,
             Boolean start
     ) {
-        container = new Neo4jContainer<>("neo4j:5.20.0-community");
+        container = new Neo4jContainer<>(DockerImageName.parse("neo4j:5.20.0-community").asCompatibleSubstituteFor("neo4j"));
         container
             .withAdminPassword(password)
             .withNeo4jConfig("dbms.security.auth_enabled", "false")
@@ -52,6 +53,7 @@ public class Neo4jTestContainer {
         // configure wait strategy for container to be ready
         container.waitingFor(
             new WaitAllStrategy()
+                .withStartupTimeout(Duration.ofMinutes(5))
                 //.withStrategy(Wait.forListeningPort())
                 .withStrategy(
                     Wait.forLogMessage(".*Bolt enabled on.*", 1)
