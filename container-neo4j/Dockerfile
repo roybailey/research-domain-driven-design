@@ -9,3 +9,6 @@ WORKDIR /var/lib/neo4j
 COPY plugins/*.jar plugins/
 
 ENV NEO4J_AUTH=neo4j/localhost
+
+EXPOSE 7474
+EXPOSE 7687
