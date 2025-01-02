@@ -18,9 +18,22 @@
     <description>Domain Driven Design Models</description>
 
     <properties>
+        <!--
+            most version properties should be defined in parent to be inherited by all
+            unless very specialised to this module
+        -->
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

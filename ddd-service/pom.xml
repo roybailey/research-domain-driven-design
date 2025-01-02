@@ -18,6 +18,8 @@
     <description>Domain Driven Design Service</description>
 
     <properties>
+        <javalin.version>6.1.6</javalin.version>
+        <rest-assured.version>5.4.0</rest-assured.version>
     </properties>
 
     <dependencies>
@@ -25,6 +27,16 @@
             <groupId>me.roybailey</groupId>
             <artifactId>ddd-framework</artifactId>
             <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.roybailey</groupId>
+            <artifactId>ddd-framework</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <classifier>tests</classifier>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -61,23 +73,67 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <version>${spring-boot.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>me.roybailey</groupId>
-            <artifactId>ddd-domain</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>me.roybailey</groupId>
-            <artifactId>ddd-common</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
-            <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
+
+        <!-- test API servers -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${commons-compress.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-path</artifactId>
+            <version>${rest-assured.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>xml-path</artifactId>
+            <version>${rest-assured.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>kotlin-extensions</artifactId>
+            <version>${rest-assured.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-stdlib-jdk8</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-stdlib-jdk7</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>io.javalin</groupId>-->
+<!--            <artifactId>javalin</artifactId>-->
+<!--            <version>${javalin.version}</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.jetbrains.kotlin</groupId>-->
+<!--                    <artifactId>kotlin-stdlib-jdk8</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.jetbrains.kotlin</groupId>-->
+<!--                    <artifactId>kotlin-stdlib-jdk7</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
 
     </dependencies>
 

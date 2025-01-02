@@ -14,10 +14,9 @@
 
 || Module                                                        || Description  ||
 | -------------------------------------------------------------- | ------------- | 
-| [**`ddd-common`**](./bud-domain-framework/README.md)    |  Domain common code, base classes, utilities |
-| [**`ddd-domain`**](./bud-domain-blueprint/README.md)    |  Domain models |
-| [**`ddd-framework`**](./bud-domain-library/README.md) |  Domain framework of interfaces, use-cases, ports |
-| [**`ddd-support`**](./bud-domain-manager/README.md)   |  Domain support application |
+| [**`ddd-domain`**](./bud-domain-blueprint/README.md)    |  Domain models and api interfaces, use-cases, ports |
+| [**`ddd-framework`**](./bud-domain-library/README.md) |  Domain 'driven' api implementations, use-cases, ports |
+| [**`ddd-service`**](./bud-domain-manager/README.md)   |  Domain 'driver' api implementations, use-cases, ports |
 
 
 ## User Guide
@@ -31,6 +30,7 @@
 ### Prerequisites
 
 * Docker and https://testcontainers.org
+
 
 ## Handover Suggestions
 

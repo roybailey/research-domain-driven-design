@@ -17,6 +17,7 @@
         <kotlin.version>2.0.0</kotlin.version>
         <kotlinx.version>1.8.1</kotlinx.version>
         <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
+        <lombok.version>1.18.36</lombok.version>
 
         <!-- jakarta -->
         <jakarta.validation-api.version>3.0.2</jakarta.validation-api.version>
@@ -29,10 +30,6 @@
 
         <spring-cloud.version>4.1.5</spring-cloud.version>
         <io-netty-macos.version>4.1.114.Final</io-netty-macos.version>
-
-        <!-- reactor -->
-        <io.projectreactor.version>3.6.10</io.projectreactor.version><!-- from spring -->
-        <reactor-kotlin-extensions.version>1.2.3</reactor-kotlin-extensions.version><!-- from spring -->
 
         <!-- logging -->
         <slf4j.version>2.0.16</slf4j.version><!-- from spring -->
@@ -54,9 +51,11 @@
         <h2.version>1.4.200</h2.version>
 
         <!-- database -->
-        <flyway.version>10.10.0</flyway.version><!-- from spring -->
-        <jaxb.version>2.3.0</jaxb.version>
+        <neo4j.version>5.20.0</neo4j.version>
+        <neo4j-apoc.version>5.20.0</neo4j-apoc.version>
+        <neo4j-java-driver.version>5.20.0</neo4j-java-driver.version>
         <postgres.version>42.7.3</postgres.version>
+        <flyway.version>10.10.0</flyway.version><!-- from spring -->
 
         <!-- utilities -->
         <commons-text.version>1.10.0</commons-text.version>
@@ -101,7 +100,6 @@
 
     <modules>
         <module>container-neo4j</module>
-        <module>ddd-common</module>
         <module>ddd-domain</module>
         <module>ddd-framework</module>
         <module>ddd-service</module>
@@ -110,6 +108,14 @@
     <!-- management of versions defined here for modules to include without versioning -->
     <dependencyManagement>
         <dependencies>
+
+            <!-- Java -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
 
             <!-- Kotlin -->
             <dependency>
@@ -132,23 +138,6 @@
                 <groupId>org.jetbrains.kotlinx</groupId>
                 <artifactId>kotlinx-coroutines-reactor</artifactId>
                 <version>${kotlinx.version}</version>
-            </dependency>
-
-            <!-- reactor -->
-            <dependency>
-                <groupId>io.projectreactor</groupId>
-                <artifactId>reactor-core</artifactId>
-                <version>${io.projectreactor.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.projectreactor</groupId>
-                <artifactId>reactor-test</artifactId>
-                <version>${io.projectreactor.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.projectreactor.kotlin</groupId>
-                <artifactId>reactor-kotlin-extensions</artifactId>
-                <version>${reactor-kotlin-extensions.version}</version>
             </dependency>
 
             <!-- Logging -->
@@ -242,15 +231,20 @@
 
             <!-- Database -->
             <dependency>
+                <groupId>org.neo4j.driver</groupId>
+                <artifactId>neo4j-java-driver</artifactId>
+                <version>${neo4j-java-driver.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgres.version}</version>
             </dependency>
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>${jaxb.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>javax.xml.bind</groupId>-->
+<!--                <artifactId>jaxb-api</artifactId>-->
+<!--                <version>${jaxb.version}</version>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-core</artifactId>
@@ -414,129 +408,6 @@
                 <version>${testcontainers.version}</version>
             </dependency>
 
-            <!-- Common Libraries & Starter Packs -->
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-base</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-base</artifactId>
-                <type>test-jar</type>
-                <classifier>tests</classifier>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-data-jpa</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-data-jpa</artifactId>
-                <type>test-jar</type>
-                <classifier>tests</classifier>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-jooq</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-jooq</artifactId>
-                <type>test-jar</type>
-                <classifier>tests</classifier>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-neo4j</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-neo4j</artifactId>
-                <type>test-jar</type>
-                <classifier>tests</classifier>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-keycloak</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-keycloak</artifactId>
-                <type>test-jar</type>
-                <classifier>tests</classifier>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-openapi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-openapi</artifactId>
-                <type>test-jar</type>
-                <classifier>tests</classifier>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-graphql</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-graphql</artifactId>
-                <type>test-jar</type>
-                <classifier>tests</classifier>
-                <version>${project.version}</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-web</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-lib-web</artifactId>
-                <type>test-jar</type>
-                <classifier>tests</classifier>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>me.roybailey</groupId>
-                <artifactId>bud-common-starter-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -556,8 +427,8 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-        <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
+<!--        <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>-->
+<!--        <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>-->
 
         <pluginManagement>
             <plugins>
@@ -845,101 +716,101 @@
         <!-- ============================================================ -->
         <!-- DOCKER -->
         <!-- ============================================================ -->
-        <profile>
-            <id>docker</id>
-            <activation>
-                <file>
-                    <exists>docker</exists>
-                </file>
-            </activation>
-            <build>
-                <pluginManagement>
-                </pluginManagement>
-                <plugins>
-                    <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <version>${docker-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <images>
-                                <image>
-                                    <alias>${project.artifactId}</alias>
-                                    <name>
-                                        ${docker.push.registry}${docker.group}/${project.artifactId}:${project.version}
-                                    </name>
-                                    <build>
-                                        <from>${docker.pull.registry}${base.docker.name}:${base.docker.version}</from>
-                                        <assembly>
-                                            <mode>tar</mode>
-                                            <targetDir>/</targetDir>
-                                            <inline>
-                                                <fileSets>
-                                                    <fileSet>
-                                                        <directory>${project.basedir}/src/main/resources</directory>
-                                                        <outputDirectory>/opt/app/config/java/profiles</outputDirectory>
-                                                        <fileMode>0777</fileMode>
-                                                    </fileSet>
-                                                </fileSets>
-                                                <files>
-                                                    <file>
-                                                        <source>
-                                                            ${project.basedir}/target/${project.artifactId}-${project.version}.jar
-                                                        </source>
-                                                        <outputDirectory>/opt/app</outputDirectory>
-                                                        <fileMode>0777</fileMode>
-                                                    </file>
-                                                </files>
-                                            </inline>
-                                        </assembly>
-                                        <workdir>/opt/app</workdir>
-                                        <env>
-                                            <AB_OFF>true</AB_OFF>
-                                            <JAVA_APP_DIR>/opt/app</JAVA_APP_DIR>
-                                            <min_memory>${min.memory}</min_memory>
-                                            <max_memory>${max.memory}</max_memory>
-                                            <app_name>${project.artifactId}</app_name>
-                                            <app_version>${project.version}</app_version>
-                                        </env>
-                                        <ports>
-                                            <port>80</port>
-                                        </ports>
-                                        <entryPoint>
-                                            <exec>
-                                                <arg>java</arg>
-                                                <arg>-XX:InitialRAMPercentage=80</arg>
-                                                <arg>-XX:MinRAMPercentage=80</arg>
-                                                <arg>-XX:MaxRAMPercentage=80</arg>
-                                                <arg>-Dspring.config.location=/opt/app/config/java/profiles/,/opt/app/config/java/secrets/</arg>
-                                                <!--                                                <arg>-Dspring.profiles.active=${spring-profiles-active}</arg>-->
-                                                <arg>-jar</arg>
-                                                <arg>${project.artifactId}-${project.version}.jar</arg>
-                                            </exec>
-                                        </entryPoint>
-                                        <tags>
-                                            <tag>${project.version}</tag>
-                                            <tag>latest</tag>
-                                        </tags>
-                                    </build>
-                                    <run>
-                                        <ports>
-                                            <port>80:80</port>
-                                        </ports>
-                                    </run>
-                                </image>
-                            </images>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+<!--        <profile>-->
+<!--            <id>docker</id>-->
+<!--            <activation>-->
+<!--                <file>-->
+<!--                    <exists>docker</exists>-->
+<!--                </file>-->
+<!--            </activation>-->
+<!--            <build>-->
+<!--                <pluginManagement>-->
+<!--                </pluginManagement>-->
+<!--                <plugins>-->
+<!--                    <plugin>-->
+<!--                        <groupId>io.fabric8</groupId>-->
+<!--                        <artifactId>docker-maven-plugin</artifactId>-->
+<!--                        <version>${docker-maven-plugin.version}</version>-->
+<!--                        <executions>-->
+<!--                            <execution>-->
+<!--                                <phase>package</phase>-->
+<!--                                <goals>-->
+<!--                                    <goal>build</goal>-->
+<!--                                </goals>-->
+<!--                            </execution>-->
+<!--                        </executions>-->
+<!--                        <configuration>-->
+<!--                            <images>-->
+<!--                                <image>-->
+<!--                                    <alias>${project.artifactId}</alias>-->
+<!--                                    <name>-->
+<!--                                        ${docker.push.registry}${docker.group}/${project.artifactId}:${project.version}-->
+<!--                                    </name>-->
+<!--                                    <build>-->
+<!--                                        <from>${docker.pull.registry}${base.docker.name}:${base.docker.version}</from>-->
+<!--                                        <assembly>-->
+<!--                                            <mode>tar</mode>-->
+<!--                                            <targetDir>/</targetDir>-->
+<!--                                            <inline>-->
+<!--                                                <fileSets>-->
+<!--                                                    <fileSet>-->
+<!--                                                        <directory>${project.basedir}/src/main/resources</directory>-->
+<!--                                                        <outputDirectory>/opt/app/config/java/profiles</outputDirectory>-->
+<!--                                                        <fileMode>0777</fileMode>-->
+<!--                                                    </fileSet>-->
+<!--                                                </fileSets>-->
+<!--                                                <files>-->
+<!--                                                    <file>-->
+<!--                                                        <source>-->
+<!--                                                            ${project.basedir}/target/${project.artifactId}-${project.version}.jar-->
+<!--                                                        </source>-->
+<!--                                                        <outputDirectory>/opt/app</outputDirectory>-->
+<!--                                                        <fileMode>0777</fileMode>-->
+<!--                                                    </file>-->
+<!--                                                </files>-->
+<!--                                            </inline>-->
+<!--                                        </assembly>-->
+<!--                                        <workdir>/opt/app</workdir>-->
+<!--                                        <env>-->
+<!--                                            <AB_OFF>true</AB_OFF>-->
+<!--                                            <JAVA_APP_DIR>/opt/app</JAVA_APP_DIR>-->
+<!--                                            <min_memory>${min.memory}</min_memory>-->
+<!--                                            <max_memory>${max.memory}</max_memory>-->
+<!--                                            <app_name>${project.artifactId}</app_name>-->
+<!--                                            <app_version>${project.version}</app_version>-->
+<!--                                        </env>-->
+<!--                                        <ports>-->
+<!--                                            <port>80</port>-->
+<!--                                        </ports>-->
+<!--                                        <entryPoint>-->
+<!--                                            <exec>-->
+<!--                                                <arg>java</arg>-->
+<!--                                                <arg>-XX:InitialRAMPercentage=80</arg>-->
+<!--                                                <arg>-XX:MinRAMPercentage=80</arg>-->
+<!--                                                <arg>-XX:MaxRAMPercentage=80</arg>-->
+<!--                                                <arg>-Dspring.config.location=/opt/app/config/java/profiles/,/opt/app/config/java/secrets/</arg>-->
+<!--                                                &lt;!&ndash;                                                <arg>-Dspring.profiles.active=${spring-profiles-active}</arg>&ndash;&gt;-->
+<!--                                                <arg>-jar</arg>-->
+<!--                                                <arg>${project.artifactId}-${project.version}.jar</arg>-->
+<!--                                            </exec>-->
+<!--                                        </entryPoint>-->
+<!--                                        <tags>-->
+<!--                                            <tag>${project.version}</tag>-->
+<!--                                            <tag>latest</tag>-->
+<!--                                        </tags>-->
+<!--                                    </build>-->
+<!--                                    <run>-->
+<!--                                        <ports>-->
+<!--                                            <port>80:80</port>-->
+<!--                                        </ports>-->
+<!--                                    </run>-->
+<!--                                </image>-->
+<!--                            </images>-->
+<!--                        </configuration>-->
+<!--                    </plugin>-->
+<!--                </plugins>-->
+<!--            </build>-->
+<!--        </profile>-->
     </profiles>
 
 
