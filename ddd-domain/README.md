@@ -1,6 +1,6 @@
 # Domain
 
-**Module containing domain models and api interfaces (ports)**
+**Module containing domain _models_ and _api interfaces_ (ports)**
 
 Module of [**`..`**](../README.md) *parent*
 
@@ -109,5 +109,5 @@ It makes coding the exception paths and error handling easier throughout the cod
 _Nuggets of Knowledge and Thinking from last people to work on the project._
 _e.g. suggestions for technical debt reduction, simplification or enhancements_
 
-* Care must be taken with dependencies in this module as it is used by the generator in a build process
-  and by the manager for database migration and for services to load and support an API
+* [ ] Add open-api yaml examples alongside POJO data models
+* [X] Setup basic POJO data model, Store & Domain examples

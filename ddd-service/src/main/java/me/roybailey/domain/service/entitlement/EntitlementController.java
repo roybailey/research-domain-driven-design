@@ -1,7 +1,7 @@
-package me.roybailey.domain.service.entitlements;
+package me.roybailey.domain.service.entitlement;
 
-import me.roybailey.domain.audit.api.AuditDomain;
-import me.roybailey.domain.audit.model.AuditEventRecord;
+import com.google.common.collect.Maps;
+import me.roybailey.domain.entitlement.api.EntitlementDomain;
 import me.roybailey.domain.entitlement.model.Entitlement;
 import me.roybailey.domain.service.DomainApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,27 +11,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 
 @RestController
-public class EntitlementsController {
+public class EntitlementController {
 
     @Autowired
-    private AuditDomain auditStore;
+    private EntitlementDomain entitlementDomain;
 
     @PostMapping
     public ResponseEntity<DomainApiResponse<Map<String,Object>>> upsertEntitlements(
             @RequestParam String callback,
             @RequestBody List<Entitlement> entitlements
     ) {
-        List<Map<String,Object>> events = new ArrayList<>(entitlements.size());
-        entitlements.forEach( entitlement -> {
-            var eventId = auditStore.createEvent(AuditEventRecord.createEntitlement(entitlement.getName(), entitlement));
-            events.add(Map.of("eventId", eventId, "entitlement", entitlement.getName()));
-        });
-        return ResponseEntity.ok(new DomainApiResponse<>(callback, events));
+        var result = entitlementDomain.createEntitlements(entitlements);
+        return (result.isSuccess()? ResponseEntity.ok(new DomainApiResponse<>(callback, entitlements.stream().map(entitlement -> {
+            return entitlement.toMap(Maps.newHashMap());
+        }).toList())) : ResponseEntity.badRequest().build());
     }
 }

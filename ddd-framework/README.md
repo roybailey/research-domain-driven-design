@@ -36,10 +36,10 @@ Each bounded context should be in a separate package, with `model` and `api` sub
 
 Examples in this project...
 
-| Bounded Context    | Description                              |
-|--------------------|------------------------------------------|
-| **`audit`**        | Audit data capture                       |
-| **`entitlements`** | Access control and authorization capture |
+| Bounded Context     | Description                              |
+|---------------------|------------------------------------------|
+| **`audit`**         | Audit data capture                       |
+| **`entitlement`**   | Access control and authorization capture |
 
 
 ## Handover Suggestions
