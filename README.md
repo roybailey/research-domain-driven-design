@@ -12,11 +12,11 @@
 
 ## Modules
 
-| Module                                                | Description                                           |
-|-------------------------------------------------------|-------------------------------------------------------| 
-| [**`ddd-domain`**](./bud-domain-blueprint/README.md)  | Domain models and api interfaces, use-cases, ports    |
-| [**`ddd-framework`**](./bud-domain-library/README.md) | Domain 'driven' api implementations, use-cases, ports |
-| [**`ddd-service`**](./bud-domain-manager/README.md)   | Domain 'driver' api implementations, use-cases, ports |
+| Module                                           | Description                                             |
+|--------------------------------------------------|---------------------------------------------------------| 
+| [**`ddd-domain`**](./ddd-domain/README.md)       | Domain _models_ and _api interfaces_, use-cases, ports  |
+| [**`ddd-framework`**](./ddd-framework/README.md) | Domain _'driven'_ api implementations, use-cases, ports |
+| [**`ddd-service`**](./ddd-service/README.md)     | Domain _'driver'_ api implementations, use-cases, ports |
 
 
 ## User Guide
