@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface EntitlementDomain {
 
-    default DomainResult<List<Entitlement>> createEntitlements(List<Entitlement> entitlements) {
+    default DomainResult<List<DomainResult<Long>>> createEntitlements(List<Entitlement> entitlements) {
         return DomainResult.notImplemented(this, "createEntitlements");
     }
 

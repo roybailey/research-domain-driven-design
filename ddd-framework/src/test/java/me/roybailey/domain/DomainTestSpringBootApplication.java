@@ -1,8 +1,8 @@
 package me.roybailey.domain;
 
 import me.roybailey.domain.audit.model.AuditEventRecord;
-import me.roybailey.domain.audit.model.AuditEventSubject;
 import me.roybailey.domain.audit.model.AuditEventType;
+import me.roybailey.domain.audit.model.AuditEventAction;
 import org.jooq.DSLContext;
 import org.jooq.impl.SQLDataType;
 import org.neo4j.driver.Driver;
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Bean;
 import java.util.Collections;
 import java.util.Map;
 
-import static me.roybailey.domain.audit.store.AuditPostgresStorage.*;
+import static me.roybailey.domain.audit.store.PostgresAuditStore.*;
 import static org.junit.Assert.fail;
 
 
@@ -37,8 +37,10 @@ class DomainTestSpringBootApplication {
 
                 var createSql = jooq.createTable(AUDIT)
                         .column(ID.getName(), SQLDataType.VARCHAR(36))
-                        .column(SUBJECT.getName(), SQLDataType.VARCHAR)
-                        .column(TYPE.getName(), SQLDataType.VARCHAR);
+                        .column(TYPE.getName(), SQLDataType.VARCHAR)
+                        .column(ACTION.getName(), SQLDataType.VARCHAR)
+                        .column(REFERENCE.getName(), SQLDataType.VARCHAR)
+                        ;
                 logger.info(createSql.getSQL());
                 createSql.execute();
 
@@ -46,15 +48,18 @@ class DomainTestSpringBootApplication {
                 for(int index = 0; index < 5; ++index) {
                     var auditEventRecord = new AuditEventRecord(
                             java.util.UUID.randomUUID().toString(),
-                            AuditEventSubject.values()[index % 3],
-                            AuditEventType.CREATE
+                            AuditEventType.values()[index % 3],
+                            AuditEventAction.CREATE,
+                            ""+index,
+                            Collections.emptyMap()
                     );
                     logger.info("Saving audit event "+auditEventRecord);
-                    var insertSql = jooq.insertInto(AUDIT, ID, SUBJECT, TYPE)
+                    var insertSql = jooq.insertInto(AUDIT, ID, TYPE, ACTION, REFERENCE)
                             .values(
                                     auditEventRecord.getId(),
-                                    auditEventRecord.getSubject().name(),
-                                    auditEventRecord.getType().name()
+                                    auditEventRecord.getType().name(),
+                                    auditEventRecord.getAction().name(),
+                                    auditEventRecord.getReference()
                             );
                     logger.info(insertSql.getSQL());
                     insertSql.execute();
@@ -69,8 +74,10 @@ class DomainTestSpringBootApplication {
                 fetchAll.forEach( record -> {
                     var auditEventRecord = new AuditEventRecord(
                             record.get(ID).toString(),
-                            AuditEventSubject.valueOf(record.get(SUBJECT).toString()),
-                            AuditEventType.valueOf(record.get(TYPE).toString())
+                            AuditEventType.valueOf(record.get(TYPE).toString()),
+                            AuditEventAction.valueOf(record.get(ACTION).toString()),
+                            record.get(REFERENCE).toString(),
+                            Collections.emptyMap()
                     );
                     logger.info("Found Audit "+auditEventRecord);
                 });

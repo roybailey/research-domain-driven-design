@@ -53,12 +53,28 @@ public record Money(Double amount, String currencyCode) {}
 
 ## Developer Guide
 
+### Package conventions
+
 Each bounded context should be in a separate package, with `model` and `api` sub-packages.
 
 * `<base-package>/<bounded-context>/model/*` folder, contains all data model objects
 * `<base-package>/<bounded-context>/api/*` folder, contains all api interfaces, ports
 
-Examples in this project...
+### Class/File naming conventions
+
+* `.../model/*Dto` the `Dto` suffix is for
+* `.../model/*.yaml` keep open-api component definitions close to the domain model classes
+* `.../api/*Domain` the `Domain` suffix defines a Domain Service or Domain Aggregate, controls and coordinates all business logic
+* `.../api/*Store` the `Store` suffix defines a Storage interface/port, methods to save, load, update and delete from a database or other form of storage
+
+### DomainResult 
+
+All domain driven api/port methods return the `DomainResult` which carries a status enum, a message, and either a data result type or an exception.
+
+This design is commonly used to allow methods to return meta information (success, failure, different types of failure, errors) with some data type result.
+It makes coding the exception paths and error handling easier throughout the codebase.
+
+### Examples in this project
 
 | Bounded Context    | Description                              |
 |--------------------|------------------------------------------|

@@ -1,7 +1,7 @@
 package me.roybailey.domain.service.entitlements;
 
 import me.roybailey.domain.audit.api.AuditDomain;
-import me.roybailey.domain.audit.model.EntitlementEvent;
+import me.roybailey.domain.audit.model.AuditEventRecord;
 import me.roybailey.domain.auth.model.Entitlement;
 import me.roybailey.domain.service.DomainApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +23,13 @@ public class EntitlementsController {
     private AuditDomain auditStore;
 
     @PostMapping
-    public ResponseEntity<DomainApiResponse<Map<String,String>>> upsertEntitlements(
+    public ResponseEntity<DomainApiResponse<Map<String,Object>>> upsertEntitlements(
             @RequestParam String callback,
             @RequestBody List<Entitlement> entitlements
     ) {
-        List<Map<String,String>> events = new ArrayList<>(entitlements.size());
+        List<Map<String,Object>> events = new ArrayList<>(entitlements.size());
         entitlements.forEach( entitlement -> {
-            var eventId = auditStore.createEvent(EntitlementEvent.newCreateEntitlementEvent(entitlement));
+            var eventId = auditStore.createEvent(AuditEventRecord.createEntitlement(entitlement.getName(), entitlement));
             events.add(Map.of("eventId", eventId, "entitlement", entitlement.getName()));
         });
         return ResponseEntity.ok(new DomainApiResponse<>(callback, events));

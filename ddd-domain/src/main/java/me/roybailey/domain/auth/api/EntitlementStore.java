@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface EntitlementStore {
 
-    default DomainResult<List<Entitlement>> saveEntitlements(List<Entitlement> entitlements) {
+    default DomainResult<List<DomainResult<Long>>> saveEntitlements(List<Entitlement> entitlements) {
         return DomainResult.notImplemented(this, "saveEntitlements");
     }
 

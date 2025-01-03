@@ -1,8 +1,11 @@
 package me.roybailey.domain.audit.api;
 
+import me.roybailey.domain.DomainResult;
+import me.roybailey.domain.audit.model.AuditEventRecord;
+
 public interface AuditDomain {
 
-    default String createEvent(AuditEvent event) {
-        throw new RuntimeException("NOT IMPLEMENTED: "+this.getClass().getSimpleName()+".createEvent");
+    default DomainResult<Integer> createEvent(AuditEventRecord event) {
+        return DomainResult.notImplemented(this, "createEvent");
     }
 }

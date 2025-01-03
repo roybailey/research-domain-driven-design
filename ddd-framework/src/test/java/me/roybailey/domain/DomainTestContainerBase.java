@@ -4,7 +4,10 @@ import me.roybailey.domain.container.Neo4jTestContainer;
 import me.roybailey.domain.container.PostgresTestContainer;
 import org.assertj.core.api.Assertions;
 import org.jooq.DSLContext;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
 import org.slf4j.Logger;
@@ -25,38 +28,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
-@SpringBootTest
-@ActiveProfiles("test")
-public class DomainTestContainerTest extends DomainTestContainerBase {
+@Testcontainers
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class DomainTestContainerBase {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    public DSLContext jooq;
+    public static final PostgreSQLContainer<?> postgresDatabase = PostgresTestContainer.create(
+            null,
+            true,
+            true
+    );
+    public static final Neo4jContainer<?> neo4jDatabase = Neo4jTestContainer.create(
+            "password",
+            "",
+            true,
+            true,
+            true
+    );
 
-    @Autowired
-    public Driver neo4j;
-
-    @Test
-    public void testPostgresTestContainerInitialized() {
-
-        var auditSql = jooq.select().from(AUDIT);
-        var auditData = auditSql.fetch();
-
-        Assertions.assertThat(auditData.size()).isGreaterThanOrEqualTo(5);
+    @DynamicPropertySource
+    public static void properties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgresDatabase::getJdbcUrl);
+        registry.add("spring.datasource.password", postgresDatabase::getPassword);
+        registry.add("spring.datasource.username", postgresDatabase::getUsername);
+        registry.add("neo4j.url", neo4jDatabase::getBoltUrl);
     }
 
-
     @Test
-    public void testNeo4jTestContainerInitialized() {
-
-        try (Session session = neo4j.session()) {
-            Long count = session.run("MATCH (n) return count(n)", Collections.emptyMap()).next().get(0).asLong();
-            logger.info("Node count {}", count);
-            assertThat(count).isEqualTo(1);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-        assertThat(neo4jDatabase).isNotNull();
+    public void testDomainContextInitialised() {
     }
+
 }

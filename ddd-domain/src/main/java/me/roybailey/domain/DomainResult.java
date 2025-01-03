@@ -10,6 +10,9 @@ public class DomainResult<T> {
     public static <T> DomainResult<T> result(ResultStatus status, T data, String message, Exception err) {
         return new DomainResult<>(status, data, message, err);
     }
+    public static <T> DomainResult<T> ok(T data) {
+        return ok(data, ResultStatus.OK.name());
+    }
     public static <T> DomainResult<T> ok(T data, String message) {
         return new DomainResult<>(ResultStatus.OK, data, message, null);
     }
@@ -44,5 +47,8 @@ public class DomainResult<T> {
         this.err = err;
     }
 
+    public boolean isSuccess() {
+        return status == ResultStatus.OK;
+    }
 }
 
