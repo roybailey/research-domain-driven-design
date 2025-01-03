@@ -1,30 +1,29 @@
-package me.roybailey.domain.entitlements;
+package me.roybailey.domain.entitlement;
 
 import me.roybailey.domain.DomainAggregate;
 import me.roybailey.domain.DomainResult;
 import me.roybailey.domain.DomainUtils;
 import me.roybailey.domain.audit.api.AuditDomain;
 import me.roybailey.domain.audit.model.AuditEventRecord;
-import me.roybailey.domain.auth.api.EntitlementDomain;
-import me.roybailey.domain.auth.api.EntitlementStore;
-import me.roybailey.domain.auth.model.Entitlement;
-import me.roybailey.domain.auth.model.Group;
+import me.roybailey.domain.entitlement.api.EntitlementDomain;
+import me.roybailey.domain.entitlement.api.EntitlementStore;
+import me.roybailey.domain.entitlement.model.Entitlement;
+import me.roybailey.domain.entitlement.model.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-public class EntitlementsDomainService implements EntitlementDomain, DomainAggregate {
+public class EntitlementDomainService implements EntitlementDomain, DomainAggregate {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     AuditDomain auditDomain;
     EntitlementStore entitlementsStore;
 
-    public EntitlementsDomainService(
+    public EntitlementDomainService(
             AuditDomain auditDomain,
             EntitlementStore entitlementsStore
     ) {

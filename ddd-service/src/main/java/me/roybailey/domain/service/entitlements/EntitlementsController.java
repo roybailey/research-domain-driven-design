@@ -2,7 +2,7 @@ package me.roybailey.domain.service.entitlements;
 
 import me.roybailey.domain.audit.api.AuditDomain;
 import me.roybailey.domain.audit.model.AuditEventRecord;
-import me.roybailey.domain.auth.model.Entitlement;
+import me.roybailey.domain.entitlement.model.Entitlement;
 import me.roybailey.domain.service.DomainApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

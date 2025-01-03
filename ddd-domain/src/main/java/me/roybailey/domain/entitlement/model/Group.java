@@ -1,4 +1,4 @@
-package me.roybailey.domain.auth.model;
+package me.roybailey.domain.entitlement.model;
 
 import lombok.Builder;
 import lombok.Data;

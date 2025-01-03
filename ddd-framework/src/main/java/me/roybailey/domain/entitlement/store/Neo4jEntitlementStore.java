@@ -1,12 +1,12 @@
-package me.roybailey.domain.entitlements.store;
+package me.roybailey.domain.entitlement.store;
 
 import com.google.common.collect.Maps;
 import me.roybailey.domain.DomainResult;
 import me.roybailey.domain.DomainUtils;
 import me.roybailey.domain.ResultStatus;
-import me.roybailey.domain.auth.api.EntitlementStore;
-import me.roybailey.domain.auth.model.Entitlement;
-import me.roybailey.domain.auth.model.Group;
+import me.roybailey.domain.entitlement.api.EntitlementStore;
+import me.roybailey.domain.entitlement.model.Entitlement;
+import me.roybailey.domain.entitlement.model.Group;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.Transaction;
@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.fail;
 
@@ -33,6 +32,7 @@ public class Neo4jEntitlementStore implements EntitlementStore {
 
     @Override
     public DomainResult<List<DomainResult<Long>>> saveEntitlements(List<Entitlement> entitlements) {
+        logger.info("Saving entitlements {}, {}", entitlements.size(), neo4j.hashCode());
         List<DomainResult<Long>> saved = new ArrayList<>();
         long count = 0L;
         try (Session session = neo4j.session()) {
@@ -40,7 +40,7 @@ public class Neo4jEntitlementStore implements EntitlementStore {
                 for (Entitlement entitlement : entitlements) {
                     try {
                         var params = entitlement.toMap(Maps.newHashMap());
-                        count += tx.run("""
+                        var rows = tx.run("""
                                     CREATE (e:Entitlement {
                                         id: $id,
                                         created: datetime(),
@@ -49,13 +49,15 @@ public class Neo4jEntitlementStore implements EntitlementStore {
                                     })
                                     RETURN count(e)
                                 """, params).next().get(0).asLong();
-                        logger.info("Node count {}", count);
-                        saved.add((count > 0) ? DomainResult.ok(count, "Saved Entitlement " + entitlement.getName()) :
+                        logger.info("Nodes inserted {}", rows);
+                        count += rows;
+                        saved.add((rows > 0) ? DomainResult.ok(rows, "Saved Entitlement " + entitlement.getName()) :
                                 DomainResult.invalidArgument("Failed to save entitlement " + entitlement.getName(), null));
                     } catch (Exception individualException) {
                         saved.add(DomainResult.invalidArgument("Error saving entitlement " + entitlement.getName(), individualException));
                     }
                 }
+                tx.commit();
             }
         } catch (Exception err) {
             return DomainResult.invalidArgument("Error saving entitlements", err);
@@ -69,12 +71,12 @@ public class Neo4jEntitlementStore implements EntitlementStore {
     }
 
     @Override
-    public DomainResult<List<Group>> saveGroups(List<Group> groups) {
+    public DomainResult<List<DomainResult<Long>>> saveGroups(List<Group> groups) {
         return EntitlementStore.super.saveGroups(groups);
     }
 
     @Override
-    public DomainResult<List<Package>> savePackage(List<Package> packages) {
+    public DomainResult<List<DomainResult<Long>>> savePackage(List<Package> packages) {
         return EntitlementStore.super.savePackage(packages);
     }
 
@@ -90,13 +92,14 @@ public class Neo4jEntitlementStore implements EntitlementStore {
 
     @Override
     public DomainResult<List<Entitlement>> findEntitlements() {
+        logger.info("Finding entitlements {}", neo4j.hashCode());
         List<Entitlement> entitlements = new ArrayList<>();
         try (Session session = neo4j.session()) {
             var results = session.run("MATCH (e:Entitlement) return e", Collections.emptyMap());
-            while (results.hasNext()) {
-                var entitlementsMap = results.next().asMap();
+            results.list().forEach(record -> {
+                var entitlementsMap = record.get("e").asMap();
                 entitlements.add(Entitlement.from(entitlementsMap));
-            }
+            });
         } catch (Exception e) {
             fail(e.getMessage());
         }

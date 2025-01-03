@@ -48,7 +48,29 @@ i.e. Objects that have an identity member field, such as a GUID or database prim
 Example
 
 ```java
-public record Money(Double amount, String currencyCode) {}
+import lombok.Builder;
+
+@Data
+@Builder
+public class Record {
+  private String id;
+  private String name;
+  private String description;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DomainEntity that = (DomainEntity) o;
+    return Objects.equals(id, that.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
+
+}
 ```
 
 ## Developer Guide
@@ -76,10 +98,10 @@ It makes coding the exception paths and error handling easier throughout the cod
 
 ### Examples in this project
 
-| Bounded Context    | Description                              |
-|--------------------|------------------------------------------|
-| **`audit`**        | Audit data capture                       |
-| **`entitlements`** | Access control and authorization capture |
+| Bounded Context     | Description                              |
+|---------------------|------------------------------------------|
+| **`audit`**         | Audit data capture                       |
+| **`entitlement`**   | Access control and authorization capture |
 
 
 ## Handover Suggestions

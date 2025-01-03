@@ -1,8 +1,8 @@
-package me.roybailey.domain.auth.api;
+package me.roybailey.domain.entitlement.api;
 
 import me.roybailey.domain.DomainResult;
-import me.roybailey.domain.auth.model.Entitlement;
-import me.roybailey.domain.auth.model.Group;
+import me.roybailey.domain.entitlement.model.Entitlement;
+import me.roybailey.domain.entitlement.model.Group;
 
 import java.util.List;
 
@@ -12,11 +12,11 @@ public interface EntitlementStore {
         return DomainResult.notImplemented(this, "saveEntitlements");
     }
 
-    default DomainResult<List<Group>> saveGroups(List<Group> groups) {
+    default DomainResult<List<DomainResult<Long>>> saveGroups(List<Group> groups) {
         return DomainResult.notImplemented(this, "saveGroups");
     }
 
-    default DomainResult<List<Package>> savePackage(List<Package> packages) {
+    default DomainResult<List<DomainResult<Long>>> savePackage(List<Package> packages) {
         return DomainResult.notImplemented(this, "savePackage");
     }
 

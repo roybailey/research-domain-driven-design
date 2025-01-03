@@ -1,8 +1,8 @@
-package me.roybailey.domain.auth.api;
+package me.roybailey.domain.entitlement.api;
 
 import me.roybailey.domain.DomainResult;
-import me.roybailey.domain.auth.model.Entitlement;
-import me.roybailey.domain.auth.model.Group;
+import me.roybailey.domain.entitlement.model.Entitlement;
+import me.roybailey.domain.entitlement.model.Group;
 
 import java.util.List;
 
@@ -18,6 +18,10 @@ public interface EntitlementDomain {
 
     default DomainResult<List<Package>> createPackage(List<Package> packages) {
         return DomainResult.notImplemented(this, "createPackage");
+    }
+
+    default DomainResult<List<DomainResult<Entitlement>>> getEntitlements(List<String> entitlementIds) {
+        return DomainResult.notImplemented(this, "getEntitlements");
     }
 
 }

@@ -1,4 +1,4 @@
-package me.roybailey.domain.auth.model;
+package me.roybailey.domain.entitlement.model;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,12 +8,17 @@ import java.util.Map;
 
 
 @Data
-@Builder
 public class Entitlement extends DomainEntity {
 
-    final String id;
     final String name;
     final String description;
+
+    @Builder
+    public Entitlement(String id, String name, String description) {
+        super(id);
+        this.name = name;
+        this.description = description;
+    }
 
     public static Entitlement from(Map<String, Object> data) {
         return Entitlement.builder()
@@ -24,9 +29,9 @@ public class Entitlement extends DomainEntity {
     }
 
     public Map<String, Object> toMap(Map<String, Object> map) {
-        map.put("id", id);
-        map.put("name", name);
-        map.put("description", description);
+        map.put("id", getId());
+        map.put("name", getName());
+        map.put("description", getDescription());
         return map;
     }
 }
