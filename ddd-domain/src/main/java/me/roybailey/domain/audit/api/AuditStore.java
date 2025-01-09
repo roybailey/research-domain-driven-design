@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AuditStore {
 
-    default DomainResult<Integer> saveEvent(AuditEventRecord event) {
+    default DomainResult<Long> saveEvent(AuditEventRecord event) {
         return DomainResult.notImplemented(this, "saveEvent");
     }
 

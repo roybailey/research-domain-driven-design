@@ -27,7 +27,7 @@ public class PostgresAuditStore implements AuditStore {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public static final Table<Record> AUDIT = table("audit");
+    public static final Table<Record> AUDIT = table("audit_event");
 
     public static final Field<Object> ID = field("id");
     public static final Field<Object> TYPE = field("type");
@@ -41,17 +41,16 @@ public class PostgresAuditStore implements AuditStore {
     }
 
     @Override
-    public DomainResult<Integer> saveEvent(AuditEventRecord event) {
+    public DomainResult<Long> saveEvent(AuditEventRecord event) {
         try {
-            var insertSql = jooq.insertInto(AUDIT, ID, TYPE, ACTION, REFERENCE)
+            var insertSql = jooq.insertInto(AUDIT, TYPE, ACTION, REFERENCE)
                     .values(
-                            event.getId(),
                             event.getType().name(),
                             event.getAction().name(),
                             event.getReference()
                     );
             logger.info(insertSql.getSQL());
-            int data = insertSql.execute();
+            long data = insertSql.execute();
             return (data > 0) ? DomainResult.ok(data, "Saved AuditEvent") : DomainResult.invalidArgument("Failed to save AuditEvent " + event, null);
         } catch (Exception err) {
             return DomainResult.invalidArgument("Error saving AuditEvent " + event, err);
@@ -72,7 +71,7 @@ public class PostgresAuditStore implements AuditStore {
                     AuditEventType.valueOf(record.get(TYPE).toString()),
                     AuditEventAction.valueOf(record.get(ACTION).toString()),
                     record.get(REFERENCE).toString(),
-                    Collections.emptyMap()
+                    null
             );
             results.add(auditEventRecord);
         });

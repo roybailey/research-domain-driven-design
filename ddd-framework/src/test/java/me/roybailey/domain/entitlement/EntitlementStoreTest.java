@@ -47,7 +47,7 @@ public class EntitlementStoreTest extends DomainTestContainerBase {
 
     @Test
     @Order(10)
-    public void testEntitlementsStoreCreate() {
+    public void testEntitlementStoreSave() {
 
         var results = entitlementStore.saveEntitlements(listEntitlements);
         logger.info("results: {}", results);
@@ -61,7 +61,7 @@ public class EntitlementStoreTest extends DomainTestContainerBase {
 
     @Test
     @Order(20)
-    public void testEntitlementsStoreRead() {
+    public void testEntitlementStoreFind() {
         var results = entitlementStore.findEntitlements();
         logger.info(DomainUtils.multiline("Entitlements found\n", results.getData()));
         assertThat(results.getStatus()).isEqualTo(ResultStatus.OK);

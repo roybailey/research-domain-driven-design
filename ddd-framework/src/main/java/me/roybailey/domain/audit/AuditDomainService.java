@@ -21,8 +21,7 @@ public class AuditDomainService implements AuditDomain, DomainAggregate {
     }
 
     @Override
-    public DomainResult<Integer> createEvent(AuditEventRecord event) {
-        event.setId(UUID.randomUUID().toString());
+    public DomainResult<Long> createEvent(AuditEventRecord event) {
         return auditStore.saveEvent(event);
     }
 }

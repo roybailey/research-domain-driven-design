@@ -5,7 +5,7 @@ import me.roybailey.domain.audit.model.AuditEventRecord;
 
 public interface AuditDomain {
 
-    default DomainResult<Integer> createEvent(AuditEventRecord event) {
+    default DomainResult<Long> createEvent(AuditEventRecord event) {
         return DomainResult.notImplemented(this, "createEvent");
     }
 }

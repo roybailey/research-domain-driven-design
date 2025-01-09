@@ -59,6 +59,11 @@ public class EntitlementDomainTest extends DomainTestContainerBase {
         // number of inserted rows should match original list size
         assertThat(results.getData().stream().map(DomainResult::getData).reduce(0L, Long::sum)).isEqualTo(listEntitlements.size());
         assertThat(results.getMessage()).isNotNull();
+
+        var events = auditStore.loadEvents();
+        assertThat(events.getStatus()).isEqualTo(ResultStatus.OK);
+        assertThat(events.getData()).isNotNull();
+        assertThat(events.getData().size()).isEqualTo(listEntitlements.size());
     }
 
 }
