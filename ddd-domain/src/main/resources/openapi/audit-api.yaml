@@ -17,7 +17,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './_models.yaml#/components/schemas/About'
+                $ref: '#/components/schemas/About'
   /audit-api/v1/events:
     parameters:
       - name: from
@@ -130,5 +130,7 @@ paths:
           description: Audit still linked to Group
 components:
   schemas:
+    About:
+      $ref: '../../java/me/roybailey/domain/DomainResult.yaml#/components/schemas/DomainResultDto'
     Audit:
       $ref: '../../java/me/roybailey/domain/audit/model/AuditEventRecord.yaml#/components/schemas/AuditEventDto'

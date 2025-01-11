@@ -1,18 +1,15 @@
 package me.roybailey.domain.audit;
 
+import lombok.extern.slf4j.Slf4j;
 import me.roybailey.domain.DomainAggregate;
 import me.roybailey.domain.DomainResult;
 import me.roybailey.domain.audit.api.AuditDomain;
 import me.roybailey.domain.audit.api.AuditStore;
 import me.roybailey.domain.audit.model.AuditEventRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.UUID;
 
+@Slf4j
 public class AuditDomainService implements AuditDomain, DomainAggregate {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     AuditStore auditStore;
 

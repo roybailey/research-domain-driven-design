@@ -5,31 +5,21 @@ import me.roybailey.domain.entitlement.model.Entitlement;
 import me.roybailey.domain.entitlement.model.Group;
 
 import java.util.List;
+import java.util.Map;
+
 
 public interface EntitlementStore {
 
-    default DomainResult<List<DomainResult<Long>>> saveEntitlements(List<Entitlement> entitlements) {
-        return DomainResult.notImplemented(this, "saveEntitlements");
-    }
+    DomainResult<Map<String,Object>> getEntitlementStats();
 
-    default DomainResult<List<DomainResult<Long>>> saveGroups(List<Group> groups) {
-        return DomainResult.notImplemented(this, "saveGroups");
-    }
+    DomainResult<List<DomainResult<Entitlement>>> saveEntitlements(List<Entitlement> entitlements);
+    DomainResult<List<Entitlement>> findEntitlements(List<String> entitlementIds);
+    DomainResult<Long> deleteEntitlements(List<String> entitlementIds);
 
-    default DomainResult<List<DomainResult<Long>>> savePackage(List<Package> packages) {
-        return DomainResult.notImplemented(this, "savePackage");
-    }
+    DomainResult<List<DomainResult<Long>>> saveGroups(List<Group> groups);
+    DomainResult<List<DomainResult<Long>>> savePackage(List<Package> packages);
 
-    default DomainResult<List<Package>> findPackages() {
-        return DomainResult.notImplemented(this, "findPackages");
-    }
-
-    default DomainResult<List<Group>> findGroups() {
-        return DomainResult.notImplemented(this, "findGroups");
-    }
-
-    default DomainResult<List<Entitlement>> findEntitlements() {
-        return DomainResult.notImplemented(this, "findEntitlements");
-    }
+    DomainResult<List<Package>> findPackages();
+    DomainResult<List<Group>> findGroups();
 
 }

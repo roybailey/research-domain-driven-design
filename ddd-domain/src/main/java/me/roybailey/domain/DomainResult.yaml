@@ -1,16 +1,16 @@
 components:
   schemas:
-    ApiResponse:
+    DomainResultDto:
       type: object
       properties:
         code:
           type: integer
           format: int32
-        type:
+        status:
           type: string
         message:
           type: string
+        value:
+          type: object
       xml:
         name: '##default'
-    About:
-      type: object

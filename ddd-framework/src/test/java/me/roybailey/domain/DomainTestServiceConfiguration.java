@@ -1,5 +1,6 @@
 package me.roybailey.domain;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -8,24 +9,21 @@ import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.GraphDatabase;
 import org.neo4j.driver.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
-import javax.sql.DataSource;
 
+import javax.sql.DataSource;
 import java.util.Collections;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.Assert.fail;
 
+@Slf4j
 @Configuration
 class DomainTestServiceConfiguration {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     // Spring Boot has already initialized the datasource based on properties
     @Autowired
@@ -49,7 +47,7 @@ class DomainTestServiceConfiguration {
     @Bean
     public Driver neo4jDriver() {
         // Retrieve the Bolt URL from the container
-        logger.info("Connecting to Neo4j {}", neo4jUrl);
+        log.info("Connecting to Neo4j {}", neo4jUrl);
         Driver driver = GraphDatabase.driver(neo4jUrl, AuthTokens.none());
         try (Session session = driver.session()) {
             long one = session.run("RETURN 1", Collections.emptyMap()).next().get(0).asLong();

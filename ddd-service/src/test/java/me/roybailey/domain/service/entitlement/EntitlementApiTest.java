@@ -1,5 +1,6 @@
 package me.roybailey.domain.service.entitlement;
 
+import lombok.extern.slf4j.Slf4j;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 import io.restassured.response.ExtractableResponse;
@@ -11,8 +12,6 @@ import me.roybailey.domain.audit.api.AuditStore;
 import me.roybailey.domain.entitlement.api.EntitlementDomain;
 import me.roybailey.domain.entitlement.api.EntitlementStore;
 import org.junit.jupiter.api.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -21,16 +20,18 @@ import org.springframework.test.context.ActiveProfiles;
 import roybailey.domain.openapi.model.EntitlementDto;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-
+@Slf4j
 @SpringBootTest(classes = DomainServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class EntitlementApiTest extends DomainTestContainerBase {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private AuditStore auditStore;
@@ -46,6 +47,7 @@ public class EntitlementApiTest extends DomainTestContainerBase {
             EntitlementDto.builder().name("B").description("BBB").build(),
             EntitlementDto.builder().name("C").description("CCC").build()
     );
+    private Map<String, String> mapEntitlements = new HashMap<>();
 
     @LocalServerPort
     private int port;
@@ -74,27 +76,74 @@ public class EntitlementApiTest extends DomainTestContainerBase {
                 .statusCode(200)
                 .extract();
 
-        var responseDto = Arrays.asList(response.as(EntitlementDto.class));
-        logger.info(responseDto.getClass().getName());
-        logger.info(responseDto.toString());
+        var responseDto = Arrays.asList(response.as(EntitlementDto[].class));
+        log.info(responseDto.toString());
+        for (EntitlementDto entitlementDto : responseDto) {
+            assertThat(entitlementDto.getId()).isNotNull();
+            mapEntitlements.put(entitlementDto.getId(), entitlementDto.getName());
+            entitlementDto.id(null);
+            assertThat(listEntitlements.contains(entitlementDto)).isTrue();
+        }
     }
 
     @Test
     @Order(20)
-    @Disabled
     public void testGetEntitlements() {
 
         // Test the GET endpoint
         ExtractableResponse<Response> response = given()
                 .when()
-                .get("/entitlement-api/v1/entitlements")
+                .get("/entitlement-api/v1/entitlements?ids="+mapEntitlements.keySet().stream().map(Object::toString).collect(Collectors.joining(",")))
                 .then()
                 .statusCode(200)
                 .extract();
 
-        var responseDto = response.as(Object.class);
-        logger.info(responseDto.getClass().getName());
-        logger.info(responseDto.toString());
+        var responseDto = Arrays.asList(response.as(EntitlementDto[].class));
+        log.info(responseDto.toString());
+        for (EntitlementDto entitlementDto : responseDto) {
+            assertThat(entitlementDto.getId()).isNotNull();
+            entitlementDto.id(null);
+            assertThat(listEntitlements.contains(entitlementDto)).isTrue();
+        }
     }
 
+
+    @Test
+    @Order(30)
+    @Disabled
+    public void testUpdateEntitlements() {
+
+        listEntitlements.forEach(entilement -> {
+            entilement.setDescription(entilement.getDescription() + "-UPDATED");
+        });
+        // Test the GET endpoint
+        ExtractableResponse<Response> response = given()
+                .body(listEntitlements)
+                .header("Content-Type", MediaType.APPLICATION_JSON.toString())
+                .when()
+                .put("/entitlement-api/v1/entitlements")
+                .then()
+                .statusCode(200)
+                .extract();
+
+        var responseDto = Arrays.asList(response.as(EntitlementDto[].class));
+        log.info(responseDto.toString());
+        for (EntitlementDto entitlementDto : responseDto) {
+            assertThat(listEntitlements.contains(entitlementDto)).isTrue();
+        }
+    }
+
+
+    @Test
+    @Order(40)
+    public void testDeleteEntitlements() {
+
+        // Test the GET endpoint
+        given()
+                .when()
+                .delete("/entitlement-api/v1/entitlements?ids="+mapEntitlements.keySet().stream().map(Object::toString).collect(Collectors.joining(",")))
+                .then()
+                .statusCode(200);
+
+    }
 }

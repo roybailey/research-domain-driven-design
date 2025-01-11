@@ -3,8 +3,16 @@ package me.roybailey.domain;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.With;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Stream;
+
+import static java.util.Collections.emptyList;
 
 @Data
+@With
 public class DomainResult<T> {
 
     public static <T> DomainResult<T> result(ResultStatus status, T data, String message, Exception err) {
@@ -61,5 +69,6 @@ public class DomainResult<T> {
     public boolean isFailure() {
         return !isSuccess();
     }
+
 }
 

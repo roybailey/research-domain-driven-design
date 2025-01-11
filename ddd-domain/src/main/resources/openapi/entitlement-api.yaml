@@ -17,7 +17,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './_models.yaml#/components/schemas/About'
+                $ref: '#/components/schemas/About'
   /entitlement-api/v1/entitlements:
     get:
       summary: Gets all Entitlements
@@ -25,6 +25,14 @@ paths:
       tags:
         - entitlement
       parameters:
+        - name: ids
+          description: 'The entitlement identifiers to delete'
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
         - name: group
           description: 'The entitlement linked to a group.'
           required: false
@@ -61,21 +69,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Entitlement'
+                $ref: '#/components/schemas/ArrayOfEntitlements'
     delete:
       summary: Deletes all Entitlements
       operationId: deleteEntitlements
       tags:
         - entitlement
-      requestBody:
-        description: Created entitlement object
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Entitlement'
+      parameters:
+        - name: ids
+          description: 'The entitlement identifiers to delete'
+          required: true
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         '200':
           description: All Entitlements
@@ -135,5 +143,12 @@ paths:
           description: Entitlement still linked to Group
 components:
   schemas:
+    About:
+      $ref: '../../java/me/roybailey/domain/DomainResult.yaml#/components/schemas/DomainResultDto'
     Entitlement:
       $ref: '../../java/me/roybailey/domain/entitlement/model/Entitlement.yaml#/components/schemas/EntitlementDto'
+    ArrayOfEntitlements:
+      type: array
+      items:
+        $ref: '#/components/schemas/Entitlement'
+

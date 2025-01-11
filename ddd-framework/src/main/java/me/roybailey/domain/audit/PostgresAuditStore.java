@@ -1,5 +1,6 @@
-package me.roybailey.domain.audit.store;
+package me.roybailey.domain.audit;
 
+import lombok.extern.slf4j.Slf4j;
 import me.roybailey.domain.DomainResult;
 import me.roybailey.domain.DomainUtils;
 import me.roybailey.domain.audit.api.AuditStore;
@@ -10,22 +11,18 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Table;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 
 
+@Slf4j
 @Service
 public class PostgresAuditStore implements AuditStore {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final Table<Record> AUDIT = table("audit_event");
 
@@ -49,7 +46,7 @@ public class PostgresAuditStore implements AuditStore {
                             event.getAction().name(),
                             event.getReference()
                     );
-            logger.info(insertSql.getSQL());
+            log.info(insertSql.getSQL());
             long data = insertSql.execute();
             return (data > 0) ? DomainResult.ok(data, "Saved AuditEvent") : DomainResult.invalidArgument("Failed to save AuditEvent " + event, null);
         } catch (Exception err) {
@@ -60,10 +57,10 @@ public class PostgresAuditStore implements AuditStore {
     @Override
     public DomainResult<List<AuditEventRecord>> loadEvents() {
         // fetch all Audit
-        logger.info("Loading AuditEvents");
+        log.info("Loading AuditEvents");
         List<AuditEventRecord> results = new ArrayList<>();
         var fetchAllSql = jooq.select().from(AUDIT);
-        logger.info(fetchAllSql.getSQL());
+        log.info(fetchAllSql.getSQL());
         var fetchAll = fetchAllSql.fetch();
         fetchAll.forEach( record -> {
             var auditEventRecord = new AuditEventRecord(
@@ -75,7 +72,7 @@ public class PostgresAuditStore implements AuditStore {
             );
             results.add(auditEventRecord);
         });
-        logger.info(DomainUtils.multiline("Fetched AuditEvents\n", results));
+        log.info(DomainUtils.multiline("Fetched AuditEvents\n", results));
         return DomainResult.ok(results, "");
     }
 }

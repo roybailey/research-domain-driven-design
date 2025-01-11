@@ -1,23 +1,29 @@
 package me.roybailey.domain.service.entitlement;
 
+import lombok.extern.slf4j.Slf4j;
+import me.roybailey.domain.DomainMapper;
 import me.roybailey.domain.DomainResult;
+import me.roybailey.domain.ResultStatus;
 import me.roybailey.domain.entitlement.api.EntitlementDomain;
 import me.roybailey.domain.entitlement.model.Entitlement;
 import me.roybailey.domain.openapi.api.EntitlementApiApiDelegate;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.NativeWebRequest;
+import roybailey.domain.openapi.model.DomainResultDto;
 import roybailey.domain.openapi.model.EntitlementDto;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static java.util.Collections.emptyList;
 
 
+@Slf4j
 public class EntitlementApiHandler implements EntitlementApiApiDelegate {
 
     private final NativeWebRequest webRequest;
     private final EntitlementDomain entitlementDomain;
+    private final ModelMapper mapper = new ModelMapper();
 
     public EntitlementApiHandler(
             NativeWebRequest webRequest,
@@ -33,21 +39,21 @@ public class EntitlementApiHandler implements EntitlementApiApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Object> aboutEntitlementService() {
+    public ResponseEntity<DomainResultDto> aboutEntitlementService() {
         return EntitlementApiApiDelegate.super.aboutEntitlementService();
     }
 
     @Override
-    public ResponseEntity<EntitlementDto> createEntitlements(List<EntitlementDto> entitlementDtos) {
-        var result = entitlementDomain.createEntitlements(
-                entitlementDtos.stream().map(dto -> Entitlement.builder().name(dto.getName()).build()).toList()
-        );
-        return (result.isSuccess() ? ResponseEntity.ok(entitlementDtos.get(0)) : ResponseEntity.badRequest().build());
+    public ResponseEntity<List<EntitlementDto>> createEntitlements(List<EntitlementDto> entitlementDtos) {
+        var result = entitlementDomain.createEntitlements(DomainMapper.toEntitlement(entitlementDtos));
+        var savedEntitlements = DomainMapper.toEntitlementDto(result.getOrElse(emptyList()).stream().map(DomainResult::getData).toList());
+        return (result.isSuccess() ? ResponseEntity.ok(savedEntitlements) : ResponseEntity.badRequest().build());
     }
 
     @Override
-    public ResponseEntity<Void> deleteEntitlements(List<EntitlementDto> entitlementDto) {
-        return EntitlementApiApiDelegate.super.deleteEntitlements(entitlementDto);
+    public ResponseEntity<Void> deleteEntitlements(List<String> ids) {
+        var result = entitlementDomain.deleteEntitlements(ids);
+        return (result.isSuccess() ? ResponseEntity.ok(null) : ResponseEntity.badRequest().build());
     }
 
     @Override
@@ -61,18 +67,10 @@ public class EntitlementApiHandler implements EntitlementApiApiDelegate {
     }
 
     @Override
-    public ResponseEntity<List<EntitlementDto>> getEntitlements(String group) {
-        var result = entitlementDomain.getEntitlements(Arrays.asList("1", "2", "3"));
-        var entitlementDtos = result.getOrElse(Collections.emptyList()).stream()
-                .filter(DomainResult::isSuccess)
-                .map(DomainResult::getData)
-                .map(entitlement ->
-                        EntitlementDto.builder()
-                                .name(entitlement.getName())
-                                .description(entitlement.getDescription())
-                                .name(entitlement.getName())
-                                .build()
-                ).toList();
+    public ResponseEntity<List<EntitlementDto>> getEntitlements(List<String> ids, String group) {
+        var result = (!ids.isEmpty())? entitlementDomain.getEntitlements(ids)
+                : DomainResult.result(ResultStatus.NOT_IMPLEMENTED, (List<Entitlement>)null, "entitlementDomain.getEntitlementByGroup()", null);
+        var entitlementDtos = DomainMapper.toEntitlementDto(result.getOrElse(emptyList()));
         return (result.isSuccess() ? ResponseEntity.ok(entitlementDtos) : ResponseEntity.badRequest().build());
     }
 

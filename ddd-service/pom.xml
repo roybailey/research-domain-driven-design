@@ -21,7 +21,7 @@
         <swagger-annotations.version>2.2.22</swagger-annotations.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
-        <javalin.version>6.1.6</javalin.version>
+        <modelmapper.version>3.2.0</modelmapper.version>
         <rest-assured.version>5.4.0</rest-assured.version>
     </properties>
 
@@ -66,6 +66,12 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${modelmapper.version}</version>
         </dependency>
 
         <!-- Unit Testing -->

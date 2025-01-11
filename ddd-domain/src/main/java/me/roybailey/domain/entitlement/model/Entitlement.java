@@ -1,17 +1,19 @@
 package me.roybailey.domain.entitlement.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import me.roybailey.domain.DomainEntity;
 
 import java.util.Map;
 
 
 @Data
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class Entitlement extends DomainEntity {
 
-    final String name;
-    final String description;
+    String name;
+    String description;
 
     @Builder
     public Entitlement(String id, String name, String description) {

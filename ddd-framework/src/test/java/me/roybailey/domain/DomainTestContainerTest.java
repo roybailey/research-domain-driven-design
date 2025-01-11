@@ -1,10 +1,9 @@
 package me.roybailey.domain;
 
+import lombok.extern.slf4j.Slf4j;
 import me.roybailey.domain.audit.model.AuditEventAction;
 import me.roybailey.domain.audit.model.AuditEventRecord;
 import me.roybailey.domain.audit.model.AuditEventType;
-import me.roybailey.domain.container.Neo4jTestContainer;
-import me.roybailey.domain.container.PostgresTestContainer;
 import org.assertj.core.api.Assertions;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -14,31 +13,23 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.Neo4jContainer;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Collections;
 import java.util.Map;
 
-import static me.roybailey.domain.audit.store.PostgresAuditStore.*;
+import static me.roybailey.domain.audit.PostgresAuditStore.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jooq.impl.DSL.table;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
+@Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
 public class DomainTestContainerTest extends DomainTestContainerBase {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public DSLContext jooq;
@@ -53,7 +44,7 @@ public class DomainTestContainerTest extends DomainTestContainerBase {
         // to see if vanilla Jooq SQL is working on the connected database
         Table< Record > TEST_AUDIT = table("test_table");
         var dropSql = jooq.dropTableIfExists(TEST_AUDIT);
-        logger.info(dropSql.getSQL());
+        log.info(dropSql.getSQL());
         dropSql.execute();
 
         var createSql = jooq.createTable(TEST_AUDIT)
@@ -62,7 +53,7 @@ public class DomainTestContainerTest extends DomainTestContainerBase {
                 .column(ACTION.getName(), SQLDataType.VARCHAR)
                 .column(REFERENCE.getName(), SQLDataType.VARCHAR)
                 ;
-        logger.info(createSql.getSQL());
+        log.info(createSql.getSQL());
         createSql.execute();
 
         // save a few Audit
@@ -74,7 +65,7 @@ public class DomainTestContainerTest extends DomainTestContainerBase {
                     ""+index,
                     Collections.emptyMap()
             );
-            logger.info("Saving audit event "+auditEventRecord);
+            log.info("Saving audit event "+auditEventRecord);
             var insertSql = jooq.insertInto(TEST_AUDIT, ID, TYPE, ACTION, REFERENCE)
                     .values(
                             auditEventRecord.getId(),
@@ -82,15 +73,15 @@ public class DomainTestContainerTest extends DomainTestContainerBase {
                             auditEventRecord.getAction().name(),
                             auditEventRecord.getReference()
                     );
-            logger.info(insertSql.getSQL());
+            log.info(insertSql.getSQL());
             insertSql.execute();
         }
 
         // fetch all Audit
-        logger.info("Audit found with findAll():");
-        logger.info("-------------------------------");
+        log.info("Audit found with findAll():");
+        log.info("-------------------------------");
         var fetchAllSql = jooq.select().from(TEST_AUDIT);
-        logger.info(fetchAllSql.getSQL());
+        log.info(fetchAllSql.getSQL());
         var fetchAll = fetchAllSql.fetch();
         var auditData = fetchAll.map( record -> {
             var auditEventRecord = new AuditEventRecord(
@@ -100,10 +91,10 @@ public class DomainTestContainerTest extends DomainTestContainerBase {
                     record.get(REFERENCE).toString(),
                     Collections.emptyMap()
             );
-            logger.info("Found Audit "+auditEventRecord);
+            log.info("Found Audit "+auditEventRecord);
             return auditEventRecord;
         }).stream().toList();
-        logger.info("");
+        log.info("");
 
         Assertions.assertThat(auditData.size()).isGreaterThanOrEqualTo(5);
         jooq.dropTableIfExists(TEST_AUDIT).execute();
@@ -115,14 +106,14 @@ public class DomainTestContainerTest extends DomainTestContainerBase {
 
         try (Session session = neo4j.session()) {
             Map<String,?> mapNode = session.run("CREATE (n:Test { name: 'First' }) return n", Collections.emptyMap()).next().get(0).asMap();
-            logger.info("Created Test Node "+mapNode);
+            log.info("Created Test Node "+mapNode);
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
 
         try (Session session = neo4j.session()) {
             Long count = session.run("MATCH (n) return count(n)", Collections.emptyMap()).next().get(0).asLong();
-            logger.info("Node count {}", count);
+            log.info("Node count {}", count);
             assertThat(count).isGreaterThanOrEqualTo(1);
         } catch (Exception e) {
             fail(e.getMessage());

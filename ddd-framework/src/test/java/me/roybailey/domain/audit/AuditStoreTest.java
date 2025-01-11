@@ -1,5 +1,6 @@
 package me.roybailey.domain.audit;
 
+import lombok.extern.slf4j.Slf4j;
 import me.roybailey.domain.DomainResult;
 import me.roybailey.domain.DomainTestContainerBase;
 import me.roybailey.domain.DomainUtils;
@@ -8,17 +9,10 @@ import me.roybailey.domain.audit.api.AuditStore;
 import me.roybailey.domain.audit.model.AuditEventAction;
 import me.roybailey.domain.audit.model.AuditEventRecord;
 import me.roybailey.domain.audit.model.AuditEventType;
-import me.roybailey.domain.audit.store.PostgresAuditStore;
-import me.roybailey.domain.entitlement.api.EntitlementStore;
-import me.roybailey.domain.entitlement.model.Entitlement;
-import me.roybailey.domain.entitlement.store.Neo4jEntitlementStore;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.neo4j.driver.Driver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -28,11 +22,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
+@Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
 public class AuditStoreTest extends DomainTestContainerBase {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public DSLContext jooq;
@@ -63,7 +56,7 @@ public class AuditStoreTest extends DomainTestContainerBase {
         listAuditEvents.forEach( event -> {
             results.add(auditStore.saveEvent(event));
         });
-        logger.info("results: {}", results);
+        log.info("results: {}", results);
         assertThat(results.size()).isEqualTo(listAuditEvents.size());
         // number of inserted rows should match original list size
         assertThat(results.stream().map(DomainResult::getData).reduce(0L, Long::sum)).isEqualTo(listAuditEvents.size());
@@ -73,7 +66,7 @@ public class AuditStoreTest extends DomainTestContainerBase {
     @Order(20)
     public void testAuditStoreRead() {
         var results = auditStore.loadEvents();
-        logger.info(DomainUtils.multiline("Audit Events found\n", results.getData()));
+        log.info(DomainUtils.multiline("Audit Events found\n", results.getData()));
         assertThat(results.getStatus()).isEqualTo(ResultStatus.OK);
         assertThat(results.getData()).isNotNull();
         assertThat(results.getData().size()).isEqualTo(listAuditEvents.size());
@@ -81,7 +74,7 @@ public class AuditStoreTest extends DomainTestContainerBase {
 
         var saved = results.getData();
         saved.forEach(savedEvent -> {
-            logger.info(savedEvent.toString());
+            log.info(savedEvent.toString());
             assertThat(savedEvent.getId()).isNotNull();
             assertThat(listAuditEvents.indexOf(savedEvent)).isGreaterThanOrEqualTo(0);
         });

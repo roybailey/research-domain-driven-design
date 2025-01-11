@@ -5,23 +5,20 @@ import me.roybailey.domain.entitlement.model.Entitlement;
 import me.roybailey.domain.entitlement.model.Group;
 
 import java.util.List;
+import java.util.Map;
+
 
 public interface EntitlementDomain {
 
-    default DomainResult<List<DomainResult<Long>>> createEntitlements(List<Entitlement> entitlements) {
-        return DomainResult.notImplemented(this, "createEntitlements");
-    }
+    DomainResult<Map<String,Object>> getEntitlementsStats();
 
-    default DomainResult<List<Group>> createGroups(List<Group> groups) {
-        return DomainResult.notImplemented(this, "createGroups");
-    }
+    DomainResult<Entitlement> createEntitlement(Entitlement entitlement);
+    DomainResult<List<DomainResult<Entitlement>>> createEntitlements(List<Entitlement> entitlements);
+    DomainResult<List<Entitlement>> getEntitlements(List<String> entitlementIds);
+    DomainResult<Long> deleteEntitlements(List<String> entitlementIds);
 
-    default DomainResult<List<Package>> createPackage(List<Package> packages) {
-        return DomainResult.notImplemented(this, "createPackage");
-    }
+    DomainResult<List<DomainResult<Group>>> createGroups(List<Group> groups);
 
-    default DomainResult<List<DomainResult<Entitlement>>> getEntitlements(List<String> entitlementIds) {
-        return DomainResult.notImplemented(this, "getEntitlements");
-    }
+    DomainResult<List<DomainResult<Package>>> createPackage(List<Package> packages);
 
 }

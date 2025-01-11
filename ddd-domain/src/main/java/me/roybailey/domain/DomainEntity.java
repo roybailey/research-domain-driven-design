@@ -3,6 +3,7 @@ package me.roybailey.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.With;
 
 import java.util.Objects;
 
