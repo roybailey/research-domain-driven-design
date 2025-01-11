@@ -7,6 +7,8 @@ import me.roybailey.domain.container.Neo4jTestContainer;
 import me.roybailey.domain.container.PostgresTestContainer;
 import org.assertj.core.api.Assertions;
 import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Table;
 import org.jooq.impl.SQLDataType;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,7 @@ import java.util.Map;
 
 import static me.roybailey.domain.audit.store.PostgresAuditStore.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.jooq.impl.DSL.table;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
@@ -46,11 +49,14 @@ public class DomainTestContainerTest extends DomainTestContainerBase {
     @Test
     public void testPostgresTestContainerInitialized() {
 
-        var dropSql = jooq.dropTableIfExists(AUDIT);
+        // re-use the Jooq Audit table column definitions but on a test table
+        // to see if vanilla Jooq SQL is working on the connected database
+        Table< Record > TEST_AUDIT = table("test_table");
+        var dropSql = jooq.dropTableIfExists(TEST_AUDIT);
         logger.info(dropSql.getSQL());
         dropSql.execute();
 
-        var createSql = jooq.createTable(AUDIT)
+        var createSql = jooq.createTable(TEST_AUDIT)
                 .column(ID.getName(), SQLDataType.VARCHAR(36))
                 .column(TYPE.getName(), SQLDataType.VARCHAR)
                 .column(ACTION.getName(), SQLDataType.VARCHAR)
@@ -69,7 +75,7 @@ public class DomainTestContainerTest extends DomainTestContainerBase {
                     Collections.emptyMap()
             );
             logger.info("Saving audit event "+auditEventRecord);
-            var insertSql = jooq.insertInto(AUDIT, ID, TYPE, ACTION, REFERENCE)
+            var insertSql = jooq.insertInto(TEST_AUDIT, ID, TYPE, ACTION, REFERENCE)
                     .values(
                             auditEventRecord.getId(),
                             auditEventRecord.getType().name(),
@@ -83,7 +89,7 @@ public class DomainTestContainerTest extends DomainTestContainerBase {
         // fetch all Audit
         logger.info("Audit found with findAll():");
         logger.info("-------------------------------");
-        var fetchAllSql = jooq.select().from(AUDIT);
+        var fetchAllSql = jooq.select().from(TEST_AUDIT);
         logger.info(fetchAllSql.getSQL());
         var fetchAll = fetchAllSql.fetch();
         var auditData = fetchAll.map( record -> {
@@ -100,7 +106,7 @@ public class DomainTestContainerTest extends DomainTestContainerBase {
         logger.info("");
 
         Assertions.assertThat(auditData.size()).isGreaterThanOrEqualTo(5);
-        jooq.dropTableIfExists(AUDIT).execute();
+        jooq.dropTableIfExists(TEST_AUDIT).execute();
     }
 
 

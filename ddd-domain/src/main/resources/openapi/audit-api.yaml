@@ -1,0 +1,134 @@
+openapi: 3.0.3
+info:
+  title: Audit - OpenAPI 3.0
+  description: Audit service based on the OpenAPI 3.0 specification.
+  version: 0.1.0
+tags:
+  - name: audit
+    description: Operations to create/maintain/query audit events
+paths:
+  /audit-api/v1/about:
+    get:
+      summary: Get Audit Service about information
+      operationId: aboutAuditService
+      responses:
+        '200':
+          description: About Audit Service information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: './_models.yaml#/components/schemas/About'
+  /audit-api/v1/events:
+    parameters:
+      - name: from
+        description: 'TimeStamp from when to return audit events (inclusive)'
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: upto
+        description: 'TimeStamp upto when to return audit events (exclusive)'
+        required: false
+        in: query
+        schema:
+          type: string
+    get:
+      summary: Gets all Audit Events
+      operationId: getAuditEvents
+      tags:
+        - audit
+      responses:
+        '200':
+          description: Gets all Audit Events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Audit'
+    post:
+      tags:
+        - audit
+      summary: Creates an Audit Event
+      description: Creates a new audit event.
+      operationId: createAudit
+      requestBody:
+        description: Created Audit Event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Audit'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Audit'
+    delete:
+      summary: Deletes all Audits
+      operationId: deleteAudits
+      tags:
+        - audit
+      responses:
+        '200':
+          description: All Audit Events
+  /audit-api/v1/events/{event}:
+    parameters:
+      - name: audit
+        description: 'The audit name that needs to be fetched.'
+        required: true
+        in: path
+        schema:
+          type: string
+    get:
+      tags:
+        - audit
+      summary: Get audit by name
+      description: ''
+      operationId: getAudit
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Audit'
+        '400':
+          description: Invalid audit supplied
+        '404':
+          description: Audit not found
+    put:
+      tags:
+        - audit
+      summary: Update audit
+      description: Updates an existing audit.
+      operationId: updateAudit
+      requestBody:
+        description: Update an existent audit
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Audit'
+      responses:
+        default:
+          description: successful operation
+    delete:
+      tags:
+        - audit
+      summary: Delete audit
+      description: Deletes an existing audit and all its associated data.
+      operationId: deleteAudit
+      responses:
+        '400':
+          description: Invalid audit supplied
+        '404':
+          description: Audit not found
+        '409':
+          description: Audit still linked to Group
+components:
+  schemas:
+    Audit:
+      $ref: '../../java/me/roybailey/domain/audit/model/AuditEventRecord.yaml#/components/schemas/AuditEventDto'

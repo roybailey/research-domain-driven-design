@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+logging:
+  pattern.console: "%d{HH:mm:ss} [%-5level] %clr([%-40.40logger{39}] [%15thread]){cyan} %msg%n"
+  level:
+    web: DEBUG
+    me.roybailey: DEBUG
+    org.springframework: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.web.server.authorization: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.web.server: DEBUG
+    org.springframework.web.reactive.function.client: INFO
+
+

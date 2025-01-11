@@ -1,0 +1,19 @@
+components:
+  schemas:
+    AuditEventDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 'ABCD'
+        type:
+          type: string
+          pattern: "^$|^(ENTITLEMENT|GROUP|PACKAGE)$"
+          example: 'Audit reference type'
+        action:
+          type: string
+          pattern: "^$|^(CREATE|UPDATE|DELETE)$"
+          example: 'Audit action'
+        reference:
+          type: string
+          example: 'ID'

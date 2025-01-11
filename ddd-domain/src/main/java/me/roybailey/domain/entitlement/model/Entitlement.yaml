@@ -1,0 +1,15 @@
+components:
+  schemas:
+    EntitlementDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: '^[a-zA-Z0-9-]*$'
+          example: 'ABCD'
+        name:
+          type: string
+          example: 'Access-To-Group-Of-Entitlements'
+        description:
+          type: string
+          example: 'Description of this group'

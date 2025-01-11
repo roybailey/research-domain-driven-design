@@ -1,0 +1,46 @@
+server:
+  port: 80
+
+
+spring:
+  application:
+    name: ddd-domain-api
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+  sql:
+    init:
+      mode: never
+      platform: postgres
+  jooq:
+    sql-dialect: POSTGRES
+  # this is used for neo4j actuator health checks
+  neo4j:
+    uri: ${NEO4J_URL}
+    authentication:
+      username: ${NEO4J_USERNAME}
+      password: ${NEO4J_PASSWORD}
+
+
+management:
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env
+
+
+springdoc:
+  # /api-docs endpoint custom path
+  api-docs:
+    path: /api-docs
+  # swagger-ui custom path
+  swagger-ui:
+    path: /api-ui
+  # Packages to include
+  # packagesToScan: com.package1, com.package2
+  # Paths to include
+  # pathsToMatch: /auth/**
+

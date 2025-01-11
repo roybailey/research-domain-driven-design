@@ -50,6 +50,7 @@ public class DomainTestContainerBase {
         registry.add("spring.datasource.url", postgresDatabase::getJdbcUrl);
         registry.add("spring.datasource.password", postgresDatabase::getPassword);
         registry.add("spring.datasource.username", postgresDatabase::getUsername);
+        registry.add("spring.neo4j.uri", neo4jDatabase::getBoltUrl);
         registry.add("neo4j.url", neo4jDatabase::getBoltUrl);
     }
 

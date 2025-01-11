@@ -1,0 +1,19 @@
+components:
+  schemas:
+    PackageDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: '^[a-zA-Z0-9-]*$'
+          example: 'ABCD'
+        name:
+          type: string
+          example: 'Access-To-Something'
+        description:
+          type: string
+          example: 'Description of this package'
+        groups:
+          type: array
+          items:
+            $ref: './Group.yaml#/components/schemas/GroupDto'

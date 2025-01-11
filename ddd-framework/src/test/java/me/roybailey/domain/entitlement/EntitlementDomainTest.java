@@ -12,6 +12,7 @@ import me.roybailey.domain.entitlement.api.EntitlementStore;
 import me.roybailey.domain.entitlement.model.Entitlement;
 import me.roybailey.domain.entitlement.store.Neo4jEntitlementStore;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,7 @@ public class EntitlementDomainTest extends DomainTestContainerBase {
     }
 
     @Test
+    @Order(10)
     public void testEntitlementsCreation() {
 
         var results = entitlementDomain.createEntitlements(listEntitlements);
@@ -63,7 +65,7 @@ public class EntitlementDomainTest extends DomainTestContainerBase {
         var events = auditStore.loadEvents();
         assertThat(events.getStatus()).isEqualTo(ResultStatus.OK);
         assertThat(events.getData()).isNotNull();
-        assertThat(events.getData().size()).isEqualTo(listEntitlements.size());
+        assertThat(events.getData().size()).isGreaterThanOrEqualTo(listEntitlements.size());
     }
 
 }

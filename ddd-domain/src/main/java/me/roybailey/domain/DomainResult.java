@@ -47,8 +47,19 @@ public class DomainResult<T> {
         this.err = err;
     }
 
+    public T getOrElse(T defaultValue) {
+        if (isSuccess() && getData() != null) {
+            return getData();
+        }
+        return defaultValue;
+    }
+
     public boolean isSuccess() {
         return status == ResultStatus.OK;
+    }
+
+    public boolean isFailure() {
+        return !isSuccess();
     }
 }
 
