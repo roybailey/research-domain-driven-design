@@ -14,8 +14,8 @@
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
-    <name>Domain Driven Design Framework</name>
-    <description>Domain Driven Design Framework</description>
+    <name>Domain Driven Design SPI</name>
+    <description>Domain Driven Design SPI (driven adaptors)</description>
 
     <properties>
         <!--

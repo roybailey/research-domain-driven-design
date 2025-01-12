@@ -14,8 +14,8 @@
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
-    <name>Domain Driven Design Service</name>
-    <description>Domain Driven Design Service</description>
+    <name>Domain Driven Design API</name>
+    <description>Domain Driven Design API (driver adaptors)</description>
 
     <properties>
         <swagger-annotations.version>2.2.22</swagger-annotations.version>
