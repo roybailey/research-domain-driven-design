@@ -100,9 +100,9 @@
 
     <modules>
         <module>container-neo4j</module>
-        <module>ddd-domain</module>
-        <module>ddd-framework</module>
-        <module>ddd-service</module>
+        <module>ddd-domain-model</module>
+        <module>ddd-domain-spi</module>
+        <module>ddd-domain-api</module>
     </modules>
 
     <!-- management of versions defined here for modules to include without versioning -->

@@ -1,0 +1,154 @@
+openapi: 3.0.3
+info:
+  title: Entitlement - OpenAPI 3.0
+  description: Entitlement service based on the OpenAPI 3.0 specification.
+  version: 0.1.0
+tags:
+  - name: entitlement
+    description: Operations to create/maintain/query entitlements
+paths:
+  /access-control/v1/about:
+    get:
+      summary: Get Entitlement Service about information
+      operationId: aboutEntitlementService
+      responses:
+        '200':
+          description: About Entitlement Service information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/About'
+  /access-control/v1/entitlements:
+    get:
+      summary: Gets all Entitlements
+      operationId: getEntitlements
+      tags:
+        - entitlement
+      parameters:
+        - name: ids
+          description: 'The entitlement identifiers to delete'
+          required: false
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: group
+          description: 'The entitlement linked to a group.'
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gets all Entitlements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Entitlement'
+    post:
+      tags:
+        - entitlement
+      summary: Creates Entitlements
+      description: Creates new entitlements.
+      operationId: createEntitlements
+      requestBody:
+        description: Created entitlement object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Entitlement'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfEntitlements'
+    delete:
+      summary: Deletes all Entitlements
+      operationId: deleteEntitlements
+      tags:
+        - entitlement
+      parameters:
+        - name: ids
+          description: 'The entitlement identifiers to delete'
+          required: true
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: All Entitlements
+  /access-control/v1/entitlements/{entitlement}:
+    parameters:
+      - name: entitlement
+        description: 'The entitlement name that needs to be fetched.'
+        required: true
+        in: path
+        schema:
+          type: string
+    get:
+      tags:
+        - entitlement
+      summary: Get entitlement by name
+      description: ''
+      operationId: getEntitlement
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entitlement'
+        '400':
+          description: Invalid entitlement supplied
+        '404':
+          description: Entitlement not found
+    put:
+      tags:
+        - entitlement
+      summary: Update entitlement
+      description: Updates an existing entitlement.
+      operationId: updateEntitlement
+      requestBody:
+        description: Update an existent entitlement
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Entitlement'
+      responses:
+        default:
+          description: successful operation
+    delete:
+      tags:
+        - entitlement
+      summary: Delete entitlement
+      description: Deletes an existing entitlement and all its associated data.
+      operationId: deleteEntitlement
+      responses:
+        '400':
+          description: Invalid entitlement supplied
+        '404':
+          description: Entitlement not found
+        '409':
+          description: Entitlement still linked to Group
+components:
+  schemas:
+    About:
+      $ref: '../../DomainResult.yaml#/components/schemas/DomainResultDto'
+    Entitlement:
+      $ref: '../model/Entitlement.yaml#/components/schemas/EntitlementDto'
+    ArrayOfEntitlements:
+      type: array
+      items:
+        $ref: '#/components/schemas/Entitlement'
+

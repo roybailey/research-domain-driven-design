@@ -22,11 +22,3 @@ Module of [**`..`**](../README.md) *parent*
 * attach to neo4j docker container : `docker run --rm --platform linux/amd64 -it roybailey/container-neo4j:<version> /bin/bash`
 
 
-## Handover Suggestions
-
-_Nuggets of Knowledge and Thinking from last people to work on the project._
-_e.g. suggestions for technical debt reduction, simplification or enhancements_
-
-
-
-
