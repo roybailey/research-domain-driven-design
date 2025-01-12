@@ -24,16 +24,6 @@ Design intentions of this module...
 
 ## Developer Guide
 
-Each bounded context should be in a separate package, with `model` and `api` sub-packages.
+Each bounded context should be in a separate package.
 
-* `<base-package>/<bounded-context>/model/*` folder, contains all data model objects
-* `<base-package>/<bounded-context>/api/*` folder, contains all api interfaces, ports
-
-Examples in this project...
-
-| Bounded Context     | Description                              |
-|---------------------|------------------------------------------|
-| **`audit`**         | Audit data capture                       |
-| **`entitlement`**   | Access control and authorization capture |
-
-
+* `<base-package>/<bounded-context>/*` folder, contains spi implementations (e.g. storage, notifications)

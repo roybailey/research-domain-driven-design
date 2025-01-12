@@ -92,4 +92,3 @@ It makes coding the exception paths and error handling easier throughout the cod
 
 _Also see [**`domain`**](src/main/java/me/roybailey/domain) for shared/base classes._
 
-

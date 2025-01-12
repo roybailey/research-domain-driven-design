@@ -20,29 +20,29 @@
 
 ### Model Module
 
-Contains data classes, use-case methods for spi (service-provider-interface) ports such as storage, notifications etc.
+_Contains data classes, use-case methods for spi (service-provider-interface) ports such as storage, notifications etc._
 
-* [**`Domain`**](./ddd-domain-model/src/main/java/me/roybailey/domain)
-* [**`Audit`**](./ddd-domain-model/src/main/java/me/roybailey/domain/audit)
-* [**`Entitlement`**](./ddd-domain-model/src/main/java/me/roybailey/domain/entitlement)
+* [**`Domain`**](./ddd-domain-model/src/main/java/me/roybailey/domain) - generic/shared classes
+* [**`Audit`**](./ddd-domain-model/src/main/java/me/roybailey/domain/audit) - bounded context
+* [**`Entitlement`**](./ddd-domain-model/src/main/java/me/roybailey/domain/entitlement) - bounded context
 
 ### SPI Module
 
-Contains application domain business logic combined with real or mock service provider implementations sufficient to 
-test all incoming business logic calls with data and verify storage and spi outgoing interactions.
+_Contains application domain business logic combined with real or mock service provider implementations sufficient to 
+test all incoming business logic calls with data and verify storage and spi outgoing interactions._
 
-* [**`Domain`**](./ddd-domain-spi/src/main/java/me/roybailey/domain)
-* [**`Audit`**](./ddd-domain-spi/src/main/java/me/roybailey/domain/audit)
-* [**`Entitlement`**](./ddd-domain-spi/src/main/java/me/roybailey/domain/entitlement)
+* [**`Domain`**](./ddd-domain-spi/src/main/java/me/roybailey/domain) - generic/shared classes
+* [**`Audit`**](./ddd-domain-spi/src/main/java/me/roybailey/domain/audit) - bounded context
+* [**`Entitlement`**](./ddd-domain-spi/src/main/java/me/roybailey/domain/entitlement) - bounded context
 
 
 ### API Module
 
-Contains incoming api implementations sufficient to test all incoming interactions with REST APIs, message listeners etc.
+_Contains incoming api implementations sufficient to test all incoming interactions with REST APIs, message listeners etc._
 
-* [**`Domain`**](./ddd-domain-api/src/main/java/me/roybailey/domain)
-* [**`Audit`**](./ddd-domain-api/src/main/java/me/roybailey/domain/audit)
-* [**`Entitlement`**](./ddd-domain-api/src/main/java/me/roybailey/domain/entitlement)
+* [**`Domain`**](./ddd-domain-api/src/main/java/me/roybailey/domain) - generic/shared classes
+* [**`Audit`**](./ddd-domain-api/src/main/java/me/roybailey/domain/audit) - bounded context
+* [**`Entitlement`**](./ddd-domain-api/src/main/java/me/roybailey/domain/entitlement) - bounded context
 
 
 ## User Guide
