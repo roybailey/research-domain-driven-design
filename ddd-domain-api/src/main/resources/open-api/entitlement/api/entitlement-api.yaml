@@ -3,9 +3,6 @@ info:
   title: Entitlement - OpenAPI 3.0
   description: Entitlement service based on the OpenAPI 3.0 specification.
   version: 0.1.0
-tags:
-  - name: entitlement
-    description: Operations to create/maintain/query entitlements
 paths:
   /access-control/v1/about:
     get:

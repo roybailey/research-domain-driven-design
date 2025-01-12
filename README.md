@@ -62,7 +62,14 @@ _Contains incoming api implementations sufficient to test all incoming interacti
 _Nuggets of Knowledge and Thinking from last people to work on the project._
 _e.g. suggestions for technical debt reduction, simplification or enhancements_
 
-- [ ] Expand Audit & Entitlement storage/domain implementations and tests to cover basic CRUD flows
+- [ ] Add Kafka test containers and audit publication of events
+- [ ] Add Entitlement/Group/Package yaml based import/export support and use for more complex test data use-cases
+- [ ] Add detailed Audit query by reference, type, action, to improve test verification of audit data
+- [ ] Add Entitlement owner field and find/delete by owner to improve test data isolation
+- [ ] Expand Package storage/domain implementations and tests to cover basic CRUD flows
+- [ ] Expand Group storage/domain implementations and tests to cover basic CRUD flows
+- [ ] Expand Entitlement storage/domain implementations and tests to cover basic CRUD flows
+- [ ] Expand Audit storage/domain implementations and tests to cover basic CRUD flows
 - [X] Setup Audit & Entitlement bounded context domains with basic creation tests
 - [X] Setup module structure to cover domain models/ports, driven implementations, driver implementations
 - [X] Setup Neo4j Docker image with apoc pre-bundled
