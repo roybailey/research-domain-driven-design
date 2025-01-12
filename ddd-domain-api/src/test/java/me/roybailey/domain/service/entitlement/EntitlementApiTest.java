@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import roybailey.domain.openapi.model.EntitlementDto;
+import me.roybailey.domain.openapi.model.EntitlementDto;
 
 import java.util.Arrays;
 import java.util.HashMap;

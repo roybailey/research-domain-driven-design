@@ -2,7 +2,7 @@ package me.roybailey.domain;
 
 import me.roybailey.domain.entitlement.model.Entitlement;
 import org.modelmapper.ModelMapper;
-import roybailey.domain.openapi.model.EntitlementDto;
+import me.roybailey.domain.openapi.model.EntitlementDto;
 
 import java.util.List;
 

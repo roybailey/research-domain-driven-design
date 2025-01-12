@@ -195,7 +195,7 @@
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <apiPackage>me.roybailey.domain.openapi.api</apiPackage>
-                            <modelPackage>roybailey.domain.openapi.model</modelPackage>
+                            <modelPackage>me.roybailey.domain.openapi.model</modelPackage>
                             <supportingFilesToGenerate>
                                 ApiUtil.java
                             </supportingFilesToGenerate>

@@ -10,8 +10,8 @@ import me.roybailey.domain.openapi.api.AccessControlApiDelegate;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.NativeWebRequest;
-import roybailey.domain.openapi.model.DomainResultDto;
-import roybailey.domain.openapi.model.EntitlementDto;
+import me.roybailey.domain.openapi.model.DomainResultDto;
+import me.roybailey.domain.openapi.model.EntitlementDto;
 
 import java.util.*;
 
