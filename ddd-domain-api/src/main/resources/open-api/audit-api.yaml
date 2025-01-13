@@ -131,6 +131,6 @@ paths:
 components:
   schemas:
     About:
-      $ref: '../../DomainResult.yaml#/components/schemas/DomainResultDto'
+      $ref: './model/DomainResultDto.yaml#/components/schemas/DomainResultDto'
     Audit:
-      $ref: '../model/AuditEventRecord.yaml#/components/schemas/AuditEventDto'
+      $ref: './model/AuditEventDto.yaml#/components/schemas/AuditEventDto'

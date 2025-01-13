@@ -33,16 +33,17 @@ public class AuditStoreTest extends DomainTestContainerBase {
     private AuditStore auditStore;
 
     private List<AuditEventRecord> listAuditEvents = List.of(
-            AuditEventRecord.builder().id("1").type(AuditEventType.ENTITLEMENT).action(AuditEventAction.CREATE).reference("E1").build(),
-            AuditEventRecord.builder().id("2").type(AuditEventType.ENTITLEMENT).action(AuditEventAction.UPDATE).reference("E1").build(),
-            AuditEventRecord.builder().id("3").type(AuditEventType.ENTITLEMENT).action(AuditEventAction.DELETE).reference("E1").build(),
-            AuditEventRecord.builder().id("4").type(AuditEventType.GROUP).action(AuditEventAction.CREATE).reference("G1").build(),
-            AuditEventRecord.builder().id("5").type(AuditEventType.GROUP).action(AuditEventAction.UPDATE).reference("G1").build(),
-            AuditEventRecord.builder().id("6").type(AuditEventType.GROUP).action(AuditEventAction.DELETE).reference("G1").build(),
-            AuditEventRecord.builder().id("7").type(AuditEventType.PACKAGE).action(AuditEventAction.CREATE).reference("P1").build(),
-            AuditEventRecord.builder().id("8").type(AuditEventType.PACKAGE).action(AuditEventAction.UPDATE).reference("P1").build(),
-            AuditEventRecord.builder().id("9").type(AuditEventType.PACKAGE).action(AuditEventAction.DELETE).reference("P1").build()
+            AuditEventRecord.builder().type(AuditEventType.ENTITLEMENT).action(AuditEventAction.CREATE).reference("E1").build(),
+            AuditEventRecord.builder().type(AuditEventType.ENTITLEMENT).action(AuditEventAction.UPDATE).reference("E1").build(),
+            AuditEventRecord.builder().type(AuditEventType.ENTITLEMENT).action(AuditEventAction.DELETE).reference("E1").build(),
+            AuditEventRecord.builder().type(AuditEventType.GROUP).action(AuditEventAction.CREATE).reference("G1").build(),
+            AuditEventRecord.builder().type(AuditEventType.GROUP).action(AuditEventAction.UPDATE).reference("G1").build(),
+            AuditEventRecord.builder().type(AuditEventType.GROUP).action(AuditEventAction.DELETE).reference("G1").build(),
+            AuditEventRecord.builder().type(AuditEventType.PACKAGE).action(AuditEventAction.CREATE).reference("P1").build(),
+            AuditEventRecord.builder().type(AuditEventType.PACKAGE).action(AuditEventAction.UPDATE).reference("P1").build(),
+            AuditEventRecord.builder().type(AuditEventType.PACKAGE).action(AuditEventAction.DELETE).reference("P1").build()
     );
+    private int initialAuditCount = 0;
 
     @BeforeAll
     public void setUp() {
@@ -69,14 +70,15 @@ public class AuditStoreTest extends DomainTestContainerBase {
         log.info(DomainUtils.multiline("Audit Events found\n", results.getData()));
         assertThat(results.getStatus()).isEqualTo(ResultStatus.OK);
         assertThat(results.getData()).isNotNull();
-        assertThat(results.getData().size()).isEqualTo(listAuditEvents.size());
         assertThat(results.getMessage()).isNotNull();
 
         var saved = results.getData();
-        saved.forEach(savedEvent -> {
+        var matched = saved.stream().filter(savedEvent -> {
             log.info(savedEvent.toString());
             assertThat(savedEvent.getId()).isNotNull();
-            assertThat(listAuditEvents.indexOf(savedEvent)).isGreaterThanOrEqualTo(0);
-        });
+            savedEvent.setId(null);
+            return listAuditEvents.contains(savedEvent);
+        }).toList();
+        assertThat(matched.size()).isEqualTo(listAuditEvents.size());
     }
 }

@@ -141,9 +141,9 @@ paths:
 components:
   schemas:
     About:
-      $ref: '../../DomainResult.yaml#/components/schemas/DomainResultDto'
+      $ref: './model/DomainResultDto.yaml#/components/schemas/DomainResultDto'
     Entitlement:
-      $ref: '../model/Entitlement.yaml#/components/schemas/EntitlementDto'
+      $ref: './model/EntitlementDto.yaml#/components/schemas/EntitlementDto'
     ArrayOfEntitlements:
       type: array
       items:

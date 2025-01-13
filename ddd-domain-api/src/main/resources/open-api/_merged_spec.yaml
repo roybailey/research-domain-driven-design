@@ -4,17 +4,17 @@ servers:
 openapi: "3.0.3"
 paths:
   /access-control/v1/entitlements:
-    $ref: "./entitlement/api/entitlement-api.yaml#/paths/~1access-control~1v1~1entitlements"
+    $ref: "./entitlement-api.yaml#/paths/~1access-control~1v1~1entitlements"
   /access-control/v1/entitlements/{entitlement}:
-    $ref: "./entitlement/api/entitlement-api.yaml#/paths/~1access-control~1v1~1entitlements~1{entitlement}"
+    $ref: "./entitlement-api.yaml#/paths/~1access-control~1v1~1entitlements~1{entitlement}"
   /audit/v1/events/{event}:
-    $ref: "./audit/api/audit-api.yaml#/paths/~1audit~1v1~1events~1{event}"
+    $ref: "./audit-api.yaml#/paths/~1audit~1v1~1events~1{event}"
   /audit/v1/events:
-    $ref: "./audit/api/audit-api.yaml#/paths/~1audit~1v1~1events"
+    $ref: "./audit-api.yaml#/paths/~1audit~1v1~1events"
   /access-control/v1/about:
-    $ref: "./entitlement/api/entitlement-api.yaml#/paths/~1access-control~1v1~1about"
+    $ref: "./entitlement-api.yaml#/paths/~1access-control~1v1~1about"
   /audit/v1/about:
-    $ref: "./audit/api/audit-api.yaml#/paths/~1audit~1v1~1about"
+    $ref: "./audit-api.yaml#/paths/~1audit~1v1~1about"
 info:
   title: "merged spec"
   description: "merged spec"
