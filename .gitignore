@@ -39,8 +39,3 @@ hs_err_pid*
 
 # OS files
 .DS_Store
-
-!/server/bud-common/bud-common-lib/bud-common-lib-neo4j/lib/**
-!/server/bud-cloud/bud-cloud-container/bud-cloud-container-neo4j/apoc-*.jar
-
-*storybook.log
